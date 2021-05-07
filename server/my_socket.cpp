@@ -5,7 +5,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <string.h>
-#include <sys/shm.h>
+#include <netinet/tcp.h>
 
 #include <iostream>
 #include <string>
@@ -231,7 +231,7 @@ void* Data::ServerRecvData(void* s)
 		recv_len = recv(socket, buff, recv_max_data_ - 1, 0);
 		usleep(10000);
 		std::cout << "recv: " << buff << std::endl;
-		if (recv_len < 0){
+		if (recv_len <= 0){
 			std::cout << "recv end\n"; 
 			all_socket[socket] = 0;
 			break;
@@ -257,6 +257,7 @@ void Data::ServerSendData(char* b)
 	{
 		if (all_socket[i] == 0)
 			continue;
+
 		send_len = send(all_socket[i],buff,send_len,0);
 		if(send_len < 0)
 		{
@@ -264,3 +265,4 @@ void Data::ServerSendData(char* b)
 		}
 	}
 }
+
