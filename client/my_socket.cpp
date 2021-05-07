@@ -175,9 +175,6 @@ int MyConnect::Accept()
  */
 Data::Data()
 {
-	int shmid;
-	shmid = shmget(MYKEY, SIZE, IPC_CREAT | 0600);
-	shm_addr_ = (char*)shmat(shmid, 0, 0);
 }
 Data::~Data()
 {
@@ -218,7 +215,7 @@ void* Data::ClientSendData(void* s)
 	}
 }
 
-void Data::ServerRecvData(int s)
+void Data::ServerRecvData(int s,int* ss)
 {
 	pid_t pid = fork();
 	if (pid == -1)
@@ -235,18 +232,14 @@ void Data::ServerRecvData(int s)
 		recv_len = recv(socket, buff, 100, 0);
 		usleep(10000);
 		std::cout << "recv: " << buff << std::endl;
-		for(int i = 0; i < 1000; i++)
-		{
-			if(*(shm_addr_+100*i) == 0)
-			{
-				strcpy(shm_addr_+100*i, buff);
-				break;
-			}
-		}
+		memset(recv_data_,0,1024);
+		strcpy(recv_data_,buff);
+		ServerSendData(ss);
 	}
+	exit(0);
 }
 
-void Data::ServerSendData(int s)
+void Data::ServerSendData(int* s)
 {
 	pid_t pid = fork();
 	if (pid == -1)
@@ -255,16 +248,15 @@ void Data::ServerSendData(int s)
 	if (pid > 0)
 		return;
 
-	int socket = s;
 	char buff[256];
 	int send_len;
 	int i = 0;
-	while(true)
+	for(i; i < max_; i++)
 	{
-		if(*(shm_addr_+100*i) == 0)
+		if (*(s+i) == 0)
 			continue;
-
-		write(socket, shm_addr_, SIZE);
+		int len = send(*(s+i),recv_data_,sizeof(recv_data_),0);
 		i++;
 	}
+	exit(0);
 }
