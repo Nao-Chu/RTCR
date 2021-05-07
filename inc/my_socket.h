@@ -86,12 +86,15 @@ public:
 	~Data();
 	static void* ClientRecvData(void* s);
 	static void* ClientSendData(void* s);
-	void ServerRecvData(int s,int* ss);
-	void ServerSendData(int* s);
-	static const int max_ = 100;
+	static void* ServerRecvData(void* s);
+	static void ServerSendData(char* b);
+	static const int user_max_ = 100;
+	static int all_socket[user_max_];
 
 private:
-	char recv_data_[1024];
+	static const int send_max_data_ = 1024;
+	static const int recv_max_data_ = 1024;
+
 };
 
 #endif

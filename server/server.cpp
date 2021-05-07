@@ -1,5 +1,7 @@
 #include "../inc/my_socket.h"
 
+#include <unistd.h>
+
 #include <iostream>
  
 using namespace std;
@@ -17,24 +19,20 @@ int main()
 	MyConnect* server_tcp = new MyConnect(server);
         server_tcp->Listen();	
 
-	Data server_data;
-	int max = Data::max_;
-	int all_socket[max] = {0};
+	pthread_t server_id;
+	int accept_socket;
 	while(true)
 	{
-		int client_socket;
-		if((client_socket = server_tcp->Accept()) == -1)
+		if((accept_socket = server_tcp->Accept()) == -1)
 			continue;
 		
-		for (int i = 0; i < max; i++){
-			if(all_socket[i] == 0){
-				all_socket[i] = client_socket;
-				break;
-			}
-		}
+		Data::all_socket[accept_socket] = accept_socket;
 
-		server_data.ServerRecvData(client_socket,all_socket);
+		pthread_create(&server_id, NULL, Data::ServerRecvData, (void*)&accept_socket);
 	}
+
+	std::cout << "byby\n" << endl;
+	close(accept_socket);
  
  
 	return 0;

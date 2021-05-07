@@ -173,9 +173,11 @@ int MyConnect::Accept()
  * class :  Data
  * author:  ZZP
  */
+int Data::all_socket[Data::user_max_] = {0};
 Data::Data()
 {
 }
+
 Data::~Data()
 {
 }
@@ -183,12 +185,12 @@ Data::~Data()
 void* Data::ClientRecvData(void* s)
 {
 	int socket = *(int*)s;
-	char buff[256];
+	char buff[recv_max_data_];
 	int recv_len;
 	while(1)
 	{
-		memset(buff,0,256);
-		recv_len = recv(socket,buff,255,0);
+		memset(buff,0,recv_max_data_);
+		recv_len = recv(socket,buff,recv_max_data_ - 1,0);
 		if (recv_len < 0){
 			std::cout << "recv end\n"; 
 			break;
@@ -204,8 +206,11 @@ void* Data::ClientSendData(void* s)
 	while(1)
 	{
 		std::string str;
-		std::cout << "$$: ";
 		std::getline(std::cin, str);
+		if(str == "quit"){
+			std::cout << "byby\n";
+			exit(0);
+		}
 		const char* buff = str.c_str();
 		send_len = send(socket,buff,sizeof(str),0);
 		if (send_len < 0){
@@ -215,48 +220,47 @@ void* Data::ClientSendData(void* s)
 	}
 }
 
-void Data::ServerRecvData(int s,int* ss)
+void* Data::ServerRecvData(void* s)
 {
-	pid_t pid = fork();
-	if (pid == -1)
-		printf("fork error\n");
-
-	if (pid > 0)
-		return;
-
-	int socket = s;
-	char buff[256];
+	int socket = *(int *)s;
+	char buff[recv_max_data_];
 	int recv_len;
 	while(true)
 	{
-		recv_len = recv(socket, buff, 100, 0);
+		memset(buff, 0, recv_max_data_);
+		recv_len = recv(socket, buff, recv_max_data_ - 1, 0);
 		usleep(10000);
 		std::cout << "recv: " << buff << std::endl;
-		memset(recv_data_,0,1024);
-		strcpy(recv_data_,buff);
-		ServerSendData(ss);
+		if (recv_len < 0){
+			std::cout << "recv end\n"; 
+			all_socket[socket] = 0;
+			break;
+		}
+		
+		ServerSendData(buff);
 	}
-	exit(0);
 }
 
-void Data::ServerSendData(int* s)
+void Data::ServerSendData(char* b)
 {
-	pid_t pid = fork();
-	if (pid == -1)
-		printf("fork error\n");
+	char buff[send_max_data_];
+	memset(buff, 0, recv_max_data_);
 
-	if (pid > 0)
-		return;
-
-	char buff[256];
-	int send_len;
-	int i = 0;
-	for(i; i < max_; i++)
+	int send_len = 0;
+	for (; b[send_len] != '\0'; ++send_len)
 	{
-		if (*(s+i) == 0)
-			continue;
-		int len = send(*(s+i),recv_data_,sizeof(recv_data_),0);
-		i++;
+		buff[send_len] = b[send_len];
 	}
-	exit(0);
+	buff[++send_len] = '\0';
+
+	for(int i = 0; i < user_max_; i++)
+	{
+		if (all_socket[i] == 0)
+			continue;
+		send_len = send(all_socket[i],buff,send_len,0);
+		if(send_len < 0)
+		{
+			std::cout << "send error\n";
+		}
+	}
 }
