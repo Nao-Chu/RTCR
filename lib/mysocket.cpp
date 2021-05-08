@@ -5,7 +5,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <string.h>
-#include <sys/shm.h>
+#include <netinet/tcp.h>
 
 #include <iostream>
 #include <string>
@@ -28,12 +28,12 @@ Client::~Client()
 {
 }
 
-void Client::SetAddr(const char* addr, int port)
+void Client::SetAddr()
 {
 	memset(&client_addr_, 0, sizeof(client_addr_));
 	client_addr_.sin_family = AF_INET;
-	client_addr_.sin_port   = htons(port);
-	client_addr_.sin_addr.s_addr = inet_addr(addr);
+	client_addr_.sin_port   = htons(port_);
+	client_addr_.sin_addr.s_addr = INADDR_ANY;
 }
 
 
@@ -59,11 +59,11 @@ Server::~Server()
 {
 }
 
-void Server::SetAddr(const char* addr,int port)
+void Server::SetAddr()
 {
 	memset(&server_addr_, 0, sizeof(server_addr_));
 	server_addr_.sin_family = AF_INET;
-	server_addr_.sin_port   = htons(port);
+	server_addr_.sin_port   = htons(port_);
 	server_addr_.sin_addr.s_addr = INADDR_ANY;
 }
 
@@ -121,6 +121,7 @@ int MyConnect::TimeoutConnect()
 	if (select(tcp_socket_+1, NULL, &fdw, NULL, &timeout) <= 0){
 		return -1;
 	}
+	return 0;
 }
 
 int MyConnect::Fcntl(int flag, int get)
@@ -173,12 +174,11 @@ int MyConnect::Accept()
  * class :  Data
  * author:  ZZP
  */
+int Data::all_socket[Data::user_max_] = {0};
 Data::Data()
 {
-	int shmid;
-	shmid = shmget(MYKEY, SIZE, IPC_CREAT | 0600);
-	shm_addr_ = (char*)shmat(shmid, 0, 0);
 }
+
 Data::~Data()
 {
 }
@@ -186,18 +186,19 @@ Data::~Data()
 void* Data::ClientRecvData(void* s)
 {
 	int socket = *(int*)s;
-	char buff[256];
+	char buff[recv_max_data_];
 	int recv_len;
 	while(1)
 	{
-		memset(buff,0,256);
-		recv_len = recv(socket,buff,255,0);
-		if (recv_len < 0){
+		memset(buff,0,recv_max_data_);
+		recv_len = recv(socket,buff,recv_max_data_ - 1,0);
+		if (recv_len <= 0){
 			std::cout << "recv end\n"; 
 			break;
 		}
 		std::cout << "$:" << buff << std::endl;
 	}
+	return 0;
 }
 
 void* Data::ClientSendData(void* s)
@@ -207,8 +208,11 @@ void* Data::ClientSendData(void* s)
 	while(1)
 	{
 		std::string str;
-		std::cout << "$$: ";
 		std::getline(std::cin, str);
+		if(str == "quit"){
+			std::cout << "byby\n";
+			exit(0);
+		}
 		const char* buff = str.c_str();
 		send_len = send(socket,buff,sizeof(str),0);
 		if (send_len < 0){
@@ -216,55 +220,53 @@ void* Data::ClientSendData(void* s)
 			break;
 		}
 	}
+	return 0;
 }
 
-void Data::ServerRecvData(int s)
+void* Data::ServerRecvData(void* s)
 {
-	pid_t pid = fork();
-	if (pid == -1)
-		printf("fork error\n");
-
-	if (pid > 0)
-		return;
-
-	int socket = s;
-	char buff[256];
+	int socket = *(int *)s;
+	char buff[recv_max_data_];
 	int recv_len;
 	while(true)
 	{
-		recv_len = recv(socket, buff, 100, 0);
+		memset(buff, 0, recv_max_data_);
+		recv_len = recv(socket, buff, recv_max_data_ - 1, 0);
 		usleep(10000);
 		std::cout << "recv: " << buff << std::endl;
-		for(int i = 0; i < 1000; i++)
+		if (recv_len <= 0){
+			std::cout << "recv end\n"; 
+			all_socket[socket] = 0;
+			break;
+		}
+		
+		ServerSendData(buff);
+	}
+	return 0;
+}
+
+void Data::ServerSendData(char* b)
+{
+	char buff[send_max_data_];
+	memset(buff, 0, recv_max_data_);
+
+	int send_len = 0;
+	for (; b[send_len] != '\0'; ++send_len)
+	{
+		buff[send_len] = b[send_len];
+	}
+	buff[++send_len] = '\0';
+
+	for(int i = 0; i < user_max_; i++)
+	{
+		if (all_socket[i] == 0)
+			continue;
+
+		send_len = send(all_socket[i],buff,send_len,0);
+		if(send_len < 0)
 		{
-			if(*(shm_addr_+100*i) == 0)
-			{
-				strcpy(shm_addr_+100*i, buff);
-				break;
-			}
+			std::cout << "send error\n";
 		}
 	}
 }
 
-void Data::ServerSendData(int s)
-{
-	pid_t pid = fork();
-	if (pid == -1)
-		printf("fork error\n");
-
-	if (pid > 0)
-		return;
-
-	int socket = s;
-	char buff[256];
-	int send_len;
-	int i = 0;
-	while(true)
-	{
-		if(*(shm_addr_+100*i) == 0)
-			continue;
-
-		write(socket, shm_addr_, SIZE);
-		i++;
-	}
-}

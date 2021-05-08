@@ -1,9 +1,8 @@
-
 target = client 
 src = $(shell find . -name "*.cpp")
 inc = $(shell find ../inc -name "*.h")
 obj = $(src:%.cpp=%.o)
-libs = -lpthread
+libs = -lpthread -lmysocket
 
 ALL = $(target)
 $(target) : $(obj)

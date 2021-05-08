@@ -9,9 +9,9 @@ using namespace std;
 pthread_t client_id;
 int main(int argc, char** argv)
 {
-	int port = 8889; const char* addr = "192.168.43.5";
+	int port = 8889; const char* addr = "0.0.0.0";
 	MySocket* client = new Client();
-	client->SetAddr(addr, port);
+	client->SetAddr();
 
 	MyConnect* client_tcp = new MyConnect(client);
 	client_tcp->TcpConnect();

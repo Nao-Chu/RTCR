@@ -7,17 +7,16 @@
 typedef struct sockaddr_in SAIN;
 typedef struct sockaddr SA;
 
-#define SIZE	10240
-#define MYKEY	12345
-
 
 class MySocket
 {
 public:
 	virtual int GetSocket() = 0;
 	virtual SAIN GetAddr() = 0;
-	virtual void SetAddr(const char* addr, int port) = 0; 
-private:
+	virtual void SetAddr() = 0;
+
+protected:
+	const int port_ = 5180;
 
 };
 
@@ -26,7 +25,7 @@ class Client : public MySocket
 {
 public:
 	Client();
-	~Client();
+	virtual ~Client();
 	virtual int GetSocket()
 	{
 		return client_socket_;
@@ -35,7 +34,7 @@ public:
 	{
 		return client_addr_;
 	}
-	virtual void SetAddr(const char* addr, int port);
+	virtual void SetAddr();
 private:
 	int client_socket_;
 	SAIN client_addr_;
@@ -45,7 +44,7 @@ class Server: public MySocket
 {
 public:
 	Server();
-	~Server();
+	virtual ~Server();
 	virtual int GetSocket()
 	{
 		return server_socket_;
@@ -54,7 +53,7 @@ public:
 	{
 		return server_addr_;
 	}
-	virtual void SetAddr(const char* addr, int port);
+	virtual void SetAddr();
 private:
 	int server_socket_;
 	SAIN server_addr_;
@@ -74,6 +73,7 @@ public:
 	int Fcntl(int flag, int get = 0);
 	void Listen();
 	int Accept();
+
 private:
 	int tcp_socket_;
 	SAIN tcp_addr_;
