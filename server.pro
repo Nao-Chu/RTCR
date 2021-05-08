@@ -18,6 +18,8 @@ SOURCES += main.cpp\
     mysql.cpp
 
 HEADERS  += mywidget.h \
-    mysql.h
+    mysql.h \
 
 FORMS    += mywidget.ui
+
+LIBS    += -lmysocket -lpthread

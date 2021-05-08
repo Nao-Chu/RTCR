@@ -14,7 +14,12 @@ class MyWidget : public QWidget
 public:
     explicit MyWidget(QWidget *parent = 0);
     ~MyWidget();
+    void OpenServer();
+
     
+private slots:
+    void on_autoRun_clicked(bool checked);
+
 private:
     Ui::MyWidget *ui;
 };
