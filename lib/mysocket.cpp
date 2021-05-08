@@ -140,9 +140,9 @@ int MyConnect::Fcntl(int flag, int get)
 	return ret;
 }
 
-void MyConnect::Listen()
+int MyConnect::Listen()
 {
-	int ret = -1;
+	int ret = 0;
 	do{
 		socklen_t len_addr = sizeof(tcp_addr_);
 		if (bind(tcp_socket_, (SA*)&tcp_addr_, len_addr) == -1)
@@ -151,10 +151,12 @@ void MyConnect::Listen()
 		if (listen(tcp_socket_, 5) == -1)
 			break;
 
-		ret = 0;
+		ret = 1;
 	}while(0);
-	if (ret == -1)
+	if (ret ==  0)
 		close(tcp_socket_);
+	
+	return ret;
 }
 
 int MyConnect::Accept()

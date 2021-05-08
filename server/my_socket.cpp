@@ -139,7 +139,7 @@ int MyConnect::Fcntl(int flag, int get)
 	return ret;
 }
 
-void MyConnect::Listen()
+int MyConnect::Listen()
 {
 	int ret = -1;
 	do{
@@ -154,6 +154,8 @@ void MyConnect::Listen()
 	}while(0);
 	if (ret == -1)
 		close(tcp_socket_);
+
+	return ret;
 }
 
 int MyConnect::Accept()

@@ -71,7 +71,7 @@ public:
 	void TcpConnect();
 	int TimeoutConnect();
 	int Fcntl(int flag, int get = 0);
-	void Listen();
+	int Listen();
 	int Accept();
 
 private:
