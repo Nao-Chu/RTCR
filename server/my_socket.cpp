@@ -28,12 +28,12 @@ Client::~Client()
 {
 }
 
-void Client::SetAddr(const char* addr, int port)
+void Client::SetAddr()
 {
 	memset(&client_addr_, 0, sizeof(client_addr_));
 	client_addr_.sin_family = AF_INET;
-	client_addr_.sin_port   = htons(port);
-	client_addr_.sin_addr.s_addr = inet_addr(addr);
+	client_addr_.sin_port   = htons(port_);
+	client_addr_.sin_addr.s_addr = INADDR_ANY;
 }
 
 
@@ -59,11 +59,11 @@ Server::~Server()
 {
 }
 
-void Server::SetAddr(const char* addr,int port)
+void Server::SetAddr()
 {
 	memset(&server_addr_, 0, sizeof(server_addr_));
 	server_addr_.sin_family = AF_INET;
-	server_addr_.sin_port   = htons(port);
+	server_addr_.sin_port   = htons(port_);
 	server_addr_.sin_addr.s_addr = INADDR_ANY;
 }
 
@@ -191,7 +191,7 @@ void* Data::ClientRecvData(void* s)
 	{
 		memset(buff,0,recv_max_data_);
 		recv_len = recv(socket,buff,recv_max_data_ - 1,0);
-		if (recv_len < 0){
+		if (recv_len <= 0){
 			std::cout << "recv end\n"; 
 			break;
 		}

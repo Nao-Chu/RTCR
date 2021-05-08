@@ -8,9 +8,8 @@ using namespace std;
  
 int main()
 {
-	int port = 8889;
 	MySocket* server = new Server();
-	server->SetAddr(NULL,port);
+	server->SetAddr();
 
 	int socket = server->GetSocket();
 	int opt = SO_REUSEADDR;
