@@ -3,8 +3,11 @@
 
 #include "mywidget.h"
 
-#include <QMessageBox>
 #include <pthread.h>
+#include <unistd.h>
+
+#include <QMessageBox>
+
 
 SignUp::SignUp(QWidget *parent) :
     QWidget(parent),
@@ -66,17 +69,19 @@ void SignUp::on_sure_clicked()
     QString send_data = "up#" + user + "#" + passwd + '\0';
     QByteArray ba = send_data.toLatin1();
 
-    char* buff = ba.data();
-    client->SetData(buff);
-    qDebug("buff = %s",buff);
+    client->SetData((char*)ba.data());
+    qDebug("buff = %s",ba.data());
 
     pthread_t send;
     if (pthread_create(&send, NULL, Data::ClientSendData, (void*)client) == -1)
         qDebug("pthread_create send error");
 
     pthread_join(send,NULL);
+    char buff[30];
     memset(buff, 0, 30);
     recv(client->GetSocket(), buff, 30, 0);
+    client->CloseSocket();
+
     if (buff[0] != '#' )
     {
         qDebug("recv error");

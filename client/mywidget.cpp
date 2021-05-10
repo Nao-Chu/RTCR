@@ -33,14 +33,45 @@ void MyWidget::on_signInButton_clicked()
     user = ui->lineUsers->text();
     passwd = ui->linePasswd->text();
 
-    if (0)
+
+    MySocket* client = new Client();
+    client->SetAddr();
+
+    MyConnect* client_tcp = new MyConnect(client);
+    client_tcp->TcpConnect();
+    QString send_data = "in#" + user + "#" + passwd + '\0';
+    QByteArray ba = send_data.toLatin1();
+
+    client->SetData((char*)ba.data());
+    qDebug("buff = %s",ba.data());
+
+    pthread_t send;
+    if (pthread_create(&send, NULL, Data::ClientSendData, (void*)client) == -1)
+        qDebug("pthread_create send error");
+
+    pthread_join(send,NULL);
+    char buff[30];
+    memset(buff, 0, 30);
+    recv(client->GetSocket(), buff, 30, 0);
+    if (buff[0] != '#' )
+    {
+        qDebug("recv error");
+        return;
+    }
+
+    if(buff[1] == 't')
+    {
+        this->close();
+        CommunicationRoom *croom = new CommunicationRoom();
+        croom->show();
+        croom->setWindowTitle("Robot Team Communication Room");
+    }
+
+
+    if (buff[1] == 'f')
     {
         QMessageBox::information(this,"错误!","账号或则秘密错误");
         return;
     }
 
-    this->close();
-    CommunicationRoom *croom = new CommunicationRoom();
-    croom->show();
-    croom->setWindowTitle("Robot Team Communication Room");
 }

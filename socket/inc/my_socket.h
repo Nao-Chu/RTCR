@@ -4,6 +4,8 @@
 
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <unistd.h>
+
 typedef struct sockaddr_in SAIN;
 typedef struct sockaddr SA;
 
@@ -16,6 +18,7 @@ public:
 	virtual void SetAddr() = 0;
 	virtual void* GetData() = 0;
 	virtual void SetData(void*) = 0;
+	virtual void CloseSocket() = 0;
 
 protected:
 	const int port_ = 5180;
@@ -45,6 +48,10 @@ public:
 	{
 		client_data_ = data;
 	}
+	virtual void CloseSocket()
+	{
+		close(client_socket_);
+	}
 private:
 	int client_socket_;
 	SAIN client_addr_;
@@ -72,6 +79,10 @@ public:
 	virtual void SetData(void* data)
 	{
 		server_data_ = data;
+	}
+	virtual void CloseSocket()
+	{
+		close(server_socket_);
 	}
 private:
 	int server_socket_;

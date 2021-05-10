@@ -58,7 +58,6 @@ void* Accept(void* t)
         if ((accept_socket = server_tcp->Accept()) == -1)
             continue;
 
-        qDebug("accept accept_socket = %d",accept_socket);
         Data::all_socket[accept_socket] = accept_socket;
         if (pthread_create(&server_sign, NULL, SignInUp, (void*)&accept_socket) == -1)
             continue;
@@ -70,10 +69,8 @@ void* Accept(void* t)
 
 void* SignInUp(void* s)
 {
-
     MySql *mysql = new MySql();
     int socket = *(int*)s;
-    qDebug("socket = %d ",socket);
     char buff[30];
     int recv_len;
     memset(buff, 0, 30);
