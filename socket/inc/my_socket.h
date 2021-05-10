@@ -14,6 +14,8 @@ public:
 	virtual int GetSocket() = 0;
 	virtual SAIN GetAddr() = 0;
 	virtual void SetAddr() = 0;
+	virtual void* GetData() = 0;
+	virtual void SetData(void*) = 0;
 
 protected:
 	const int port_ = 5180;
@@ -35,9 +37,18 @@ public:
 		return client_addr_;
 	}
 	virtual void SetAddr();
+	virtual void* GetData()
+	{
+		return client_data_;
+	}
+	virtual void SetData(void* data)
+	{
+		client_data_ = data;
+	}
 private:
 	int client_socket_;
 	SAIN client_addr_;
+	void* client_data_;
 };
 
 class Server: public MySocket
@@ -54,9 +65,18 @@ public:
 		return server_addr_;
 	}
 	virtual void SetAddr();
+	virtual void* GetData()
+	{
+		return server_data_;
+	}
+	virtual void SetData(void* data)
+	{
+		server_data_ = data;
+	}
 private:
 	int server_socket_;
 	SAIN server_addr_;
+	void* server_data_;
 };
 
 
@@ -84,8 +104,8 @@ class Data
 public: 
 	Data();
 	~Data();
-	static void* ClientRecvData(void* s);
-	static void* ClientSendData(void* s);
+	static void* ClientRecvData(void* p);
+	static void* ClientSendData(void* p);
 	static void* ServerRecvData(void* s);
 	static void ServerSendData(char* b);
 	static const int user_max_ = 100;

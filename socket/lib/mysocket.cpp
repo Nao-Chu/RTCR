@@ -185,9 +185,10 @@ Data::~Data()
 {
 }
 
-void* Data::ClientRecvData(void* s)
+void* Data::ClientRecvData(void* p)
 {
-	int socket = *(int*)s;
+	Client client = *(Client*)p;
+	int socket = client.GetSocket();
 	char buff[recv_max_data_];
 	int recv_len;
 	while(1)
@@ -198,29 +199,26 @@ void* Data::ClientRecvData(void* s)
 			std::cout << "recv end\n"; 
 			break;
 		}
+		client.SetData(buff);
 		std::cout << "$:" << buff << std::endl;
 	}
 	return 0;
 }
 
-void* Data::ClientSendData(void* s)
+void* Data::ClientSendData(void* p)
 {
-	int socket = *(int*)s;
+	Client client = *(Client*)p;
+	int socket = client.GetSocket();
 	int send_len;
-	while(1)
+	char* buff = (char*)client.GetData();
+	for (send_len = 0; buff[send_len] != '\0'; ++send_len)
 	{
-		std::string str;
-		std::getline(std::cin, str);
-		if(str == "quit"){
-			std::cout << "byby\n";
-			exit(0);
-		}
-		const char* buff = str.c_str();
-		send_len = send(socket,buff,sizeof(str),0);
-		if (send_len < 0){
-			std::cout << "send end\n";
-			break;
-		}
+	}
+
+	send_len = send(socket,buff,send_len,0);
+	if (send_len < 0){
+		std::cout << "send end\n";
+		return (void*)-1;
 	}
 	return 0;
 }

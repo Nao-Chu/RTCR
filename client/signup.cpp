@@ -4,6 +4,7 @@
 #include "mywidget.h"
 
 #include <QMessageBox>
+#include <pthread.h>
 
 SignUp::SignUp(QWidget *parent) :
     QWidget(parent),
@@ -55,5 +56,41 @@ void SignUp::on_sure_clicked()
     {
         QMessageBox::information(this, "错误！","两次密码不一致");
         return;
+    }
+
+    MySocket* client = new Client();
+    client->SetAddr();
+
+    MyConnect* client_tcp = new MyConnect(client);
+    client_tcp->TcpConnect();
+    QString send_data = "up#" + user + "#" + passwd + '\0';
+    QByteArray ba = send_data.toLatin1();
+
+    char* buff = ba.data();
+    client->SetData(buff);
+    qDebug("buff = %s",buff);
+
+    pthread_t send;
+    if (pthread_create(&send, NULL, Data::ClientSendData, (void*)client) == -1)
+        qDebug("pthread_create send error");
+
+    pthread_join(send,NULL);
+    memset(buff, 0, 30);
+    recv(client->GetSocket(), buff, 30, 0);
+    if (buff[0] != '#' )
+    {
+        qDebug("recv error");
+        return;
+    }
+
+    if(buff[1] == 't')
+    {
+        qDebug("sign up success");
+        on_quit_clicked();
+    }
+
+    if(buff[1] == 'f')
+    {
+        qDebug("sign up fail");
     }
 }

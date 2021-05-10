@@ -9,7 +9,6 @@ using namespace std;
 pthread_t client_id;
 int main(int argc, char** argv)
 {
-	int port = 8889; const char* addr = "0.0.0.0";
 	MySocket* client = new Client();
 	client->SetAddr();
 
@@ -17,8 +16,12 @@ int main(int argc, char** argv)
 	client_tcp->TcpConnect();
  
 	int socket = client->GetSocket();
-	pthread_create(&client_id, NULL, Data::ClientSendData, (void*)&socket);
-	pthread_create(&client_id, NULL, Data::ClientRecvData, (void*)&socket);
+	std::cout << "client socket = " << client->GetSocket() << "\n";
+
+	char* data = "test";
+	client->SetData(data);
+	pthread_create(&client_id, NULL, Data::ClientSendData, (void*)client);
+	pthread_create(&client_id, NULL, Data::ClientRecvData, (void*)client);
 	while(1)
 	{
 	}

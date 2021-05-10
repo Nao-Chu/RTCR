@@ -2,7 +2,7 @@
 #define SIGNUP_H
 
 #include <QWidget>
-
+#include <my_socket.h>
 
 namespace Ui {
 class SignUp;

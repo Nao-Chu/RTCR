@@ -15,7 +15,7 @@ void MySql::InitSql()
     db.setHostName("0.0.0.0");
     db.setUserName("robotmaster");
     db.setPassword("123");
-    db.setDatabaseName("robot");
+    db.setDatabaseName("/var/lib/mysql");
     if(!db.open())
     {
         qDebug()<<"Database connected failed!";

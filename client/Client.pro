@@ -24,3 +24,6 @@ HEADERS  += mywidget.h \
 FORMS    += mywidget.ui \
     signup.ui \
     communicationroom.ui
+
+LIBS    += -lmysocket -lpthread
+
