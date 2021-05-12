@@ -86,7 +86,8 @@ char SignUp::SignInUpRequest(QString type, QString user, QString passwd)
     QString send_data = type + "#" + user + "#" + passwd + '\0';
     QByteArray ba = send_data.toLatin1();
 
-    client->SetData((char*)ba.data());
+    //client->SetData((char*)ba.data());
+    client->SetData((send_data.toUtf8()));
     qDebug("buff = %s",ba.data());
 
     pthread_t send;
