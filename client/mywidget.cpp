@@ -39,20 +39,22 @@ void MyWidget::on_signInButton_clicked()
 
     MyConnect* client_tcp = new MyConnect(client);
     client_tcp->TcpConnect();
+
     QString send_data = "in#" + user + "#" + passwd + '\0';
     QByteArray ba = send_data.toLatin1();
-
     client->SetData((char*)ba.data());
     qDebug("buff = %s",ba.data());
+
 
     pthread_t send;
     if (pthread_create(&send, NULL, Data::ClientSendData, (void*)client) == -1)
         qDebug("pthread_create send error");
 
     pthread_join(send,NULL);
-    char buff[30];
-    memset(buff, 0, 30);
-    recv(client->GetSocket(), buff, 30, 0);
+    char buff[12];
+    memset(buff, 0, 12);
+    recv(client->GetSocket(), buff, 12, 0);
+
     if (buff[0] != '#' )
     {
         qDebug("recv error");
@@ -71,7 +73,6 @@ void MyWidget::on_signInButton_clicked()
     if (buff[1] == 'f')
     {
         QMessageBox::information(this,"错误!","账号或则秘密错误");
-        return;
     }
 
 }

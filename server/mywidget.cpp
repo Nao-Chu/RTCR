@@ -52,13 +52,13 @@ void* Accept(void* t)
     pthread_t server_id;
     pthread_t server_sign;
     int accept_socket;
-
+    User* temp = User::GetSingleton();
     while(true)
     {
         if ((accept_socket = server_tcp->Accept()) == -1)
             continue;
 
-        Data::all_socket[accept_socket] = accept_socket;
+        temp->sockets_[accept_socket] = accept_socket;
         if (pthread_create(&server_sign, NULL, SignInUp, (void*)&accept_socket) == -1)
             continue;
         pthread_join(server_sign, NULL);
@@ -105,7 +105,7 @@ void* SignInUp(void* s)
     else
         sendbuff = "#f";
     qDebug("send = %s",sendbuff);
-    send(socket, sendbuff, 8, 0);
+    send(socket, sendbuff, 2, 0);
     return 0;
 }
 

@@ -13,6 +13,10 @@ typedef struct sockaddr SA;
 class MySocket
 {
 public:
+	MySocket() : port_(5180)
+	{
+	}
+	virtual ~MySocket();
 	virtual int GetSocket() = 0;
 	virtual SAIN GetAddr() = 0;
 	virtual void SetAddr() = 0;
@@ -21,7 +25,7 @@ public:
 	virtual void CloseSocket() = 0;
 
 protected:
-	const int port_ = 5180;
+	const int port_;
 
 };
 
@@ -119,8 +123,6 @@ public:
 	static void* ClientSendData(void* p);
 	static void* ServerRecvData(void* s);
 	static void ServerSendData(char* b);
-	static const int user_max_ = 100;
-	static int all_socket[user_max_];
 
 private:
 	static const int send_max_data_ = 1024;
@@ -128,4 +130,18 @@ private:
 
 };
 
+class User
+{
+public: 
+	enum {max_number_ = 100};
+	int sockets_[max_number_];
+	static User* GetSingleton()
+	{
+		return user_;
+	}
+
+private:
+	User();
+	static User* user_;
+}
 #endif

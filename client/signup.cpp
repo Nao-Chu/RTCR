@@ -77,9 +77,9 @@ void SignUp::on_sure_clicked()
         qDebug("pthread_create send error");
 
     pthread_join(send,NULL);
-    char buff[30];
-    memset(buff, 0, 30);
-    recv(client->GetSocket(), buff, 30, 0);
+    char buff[12];
+    memset(buff, 0, 12);
+    recv(client->GetSocket(), buff, 12, 0);
     client->CloseSocket();
 
     if (buff[0] != '#' )

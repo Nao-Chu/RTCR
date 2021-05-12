@@ -1,10 +1,10 @@
-mver= 1
-sver= 0.0
+mVer= 1
+sVer= 0.0
 src = $(shell find . -name "*.cpp")
 inc = $(shell find ../inc -name "*.h")
 obj = $(src:%.cpp=%.o)
-str = libmysocket.so.$(mver)
-target = $(str).$(sver)
+str = libmysocket.so.$(mVer)
+target = $(str).$(sVer)
 
 GCC = g++ -shared -Wl,-soname,$(str)
 

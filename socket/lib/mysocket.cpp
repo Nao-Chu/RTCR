@@ -7,7 +7,6 @@
 #include <netinet/tcp.h>
 
 #include <iostream>
-#include <string>
 
 /* 
  * class :  Client 
@@ -175,8 +174,7 @@ int MyConnect::Accept()
  * class :  Data
  * author:  ZZP
  */
-int Data::all_socket[Data::user_max_] = {0};
-Data::Data()
+Data::Data() 
 {
 }
 
@@ -188,12 +186,13 @@ void* Data::ClientRecvData(void* p)
 {
 	Client client = *(Client*)p;
 	int socket = client.GetSocket();
+
 	char buff[recv_max_data_];
 	int recv_len;
 	while(1)
 	{
-		memset(buff,0,recv_max_data_);
-		recv_len = recv(socket,buff,recv_max_data_ - 1,0);
+		memset(buff,0,sizeof(buff));
+		recv_len = recv(socket, buff, sizeof(buff), 0);
 		if (recv_len <= 0){
 			std::cout << "recv end\n"; 
 			break;
@@ -227,15 +226,17 @@ void* Data::ServerRecvData(void* s)
 	int socket = *(int *)s;
 	char buff[recv_max_data_];
 	int recv_len;
+
+	User* temp = User::GetSingleton();
 	while(true)
 	{
-		memset(buff, 0, recv_max_data_);
-		recv_len = recv(socket, buff, recv_max_data_ - 1, 0);
+		memset(buff, 0, sizeof(buff));
+		recv_len = recv(socket, buff, sizeof(buff), 0);
 		usleep(10000);
 		std::cout << "recv: " << buff << std::endl;
 		if (recv_len <= 0){
 			std::cout << "recv end\n"; 
-			all_socket[socket] = 0;
+			temp->sockets_[socket] = 0;
 			break;
 		}
 		
@@ -256,16 +257,31 @@ void Data::ServerSendData(char* b)
 	}
 	buff[++send_len] = '\0';
 
-	for(int i = 0; i < user_max_; i++)
+	
+	User* temp = User::GetSingleton();
+	for(int i = 0; i < User::max_number_; i++)
 	{
-		if (all_socket[i] == 0)
+		if (temp->sockets_[i] == 0)
 			continue;
 
-		send_len = send(all_socket[i],buff,send_len,0);
+		send_len = send(temp->sockets_[i], buff, send_len, 0);
 		if(send_len < 0)
 		{
 			std::cout << "send error\n";
 		}
 	}
 }
+
+
+
+
+/* 
+ * class :  User 
+ * author:  ZZP
+ */
+User::User() : sockets_{0}
+{
+}
+User* User::user_ = new User;
+
 
