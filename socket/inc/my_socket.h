@@ -8,25 +8,17 @@
 
 typedef struct sockaddr_in SAIN;
 typedef struct sockaddr SA;
-
+const int port_ = 5180;
 
 class MySocket
 {
 public:
-	MySocket() : port_(5180)
-	{
-	}
-	virtual ~MySocket();
 	virtual int GetSocket() = 0;
 	virtual SAIN GetAddr() = 0;
 	virtual void SetAddr() = 0;
 	virtual void* GetData() = 0;
 	virtual void SetData(void*) = 0;
 	virtual void CloseSocket() = 0;
-
-protected:
-	const int port_;
-
 };
 
 

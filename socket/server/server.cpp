@@ -20,12 +20,13 @@ int main()
 
 	pthread_t server_id;
 	int accept_socket;
+	User* temp = User::GetSingleton();
 	while(true)
 	{
 		if((accept_socket = server_tcp->Accept()) == -1)
 			continue;
 		
-		Data::all_socket[accept_socket] = accept_socket;
+		temp->sockets_[accept_socket] = accept_socket;
 
 		pthread_create(&server_id, NULL, Data::ServerRecvData, (void*)&accept_socket);
 	}

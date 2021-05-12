@@ -12,6 +12,7 @@
  * class :  Client 
  * author:  ZZP
  */
+
 Client::Client()
 {
 	client_socket_ = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
