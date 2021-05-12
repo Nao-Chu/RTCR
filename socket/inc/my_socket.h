@@ -143,5 +143,5 @@ public:
 private:
 	User();
 	static User* user_;
-}
+};
 #endif
