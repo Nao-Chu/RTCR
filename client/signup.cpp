@@ -21,6 +21,7 @@ SignUp::~SignUp()
     delete ui;
 }
 
+
 void SignUp::on_quit_clicked()
 {
     qDebug("push button is quit");
@@ -61,12 +62,28 @@ void SignUp::on_sure_clicked()
         return;
     }
 
+
+    char buff = SignInUpRequest(QString("up"), user, passwd);
+    if(buff == 't')
+    {
+        qDebug("sign up success");
+        on_quit_clicked();
+    }
+
+    if(buff == 'f')
+    {
+        qDebug("sign up fail");
+    }
+}
+
+char SignUp::SignInUpRequest(QString type, QString user, QString passwd)
+{
     MySocket* client = new Client();
     client->SetAddr();
 
     MyConnect* client_tcp = new MyConnect(client);
     client_tcp->TcpConnect();
-    QString send_data = "up#" + user + "#" + passwd + '\0';
+    QString send_data = type + "#" + user + "#" + passwd + '\0';
     QByteArray ba = send_data.toLatin1();
 
     client->SetData((char*)ba.data());
@@ -77,25 +94,18 @@ void SignUp::on_sure_clicked()
         qDebug("pthread_create send error");
 
     pthread_join(send,NULL);
-    char buff[12];
-    memset(buff, 0, 12);
-    recv(client->GetSocket(), buff, 12, 0);
-    client->CloseSocket();
+    char buff[8];
+    memset(buff, 0, 8);
+    recv(client->GetSocket(), buff, 8, 0);
+    if (QString::localeAwareCompare(type,"up") == 0)
+        client->CloseSocket();
 
     if (buff[0] != '#' )
     {
         qDebug("recv error");
-        return;
+        return 'e';
     }
 
-    if(buff[1] == 't')
-    {
-        qDebug("sign up success");
-        on_quit_clicked();
-    }
+    return buff[1];
 
-    if(buff[1] == 'f')
-    {
-        qDebug("sign up fail");
-    }
 }
