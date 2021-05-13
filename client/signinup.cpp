@@ -1,4 +1,4 @@
-#include "signup.h"
+#include "signinup.h"
 #include "ui_signup.h"
 
 #include "mywidget.h"
@@ -86,8 +86,7 @@ char SignUp::SignInUpRequest(QString type, QString user, QString passwd)
     QString send_data = type + "#" + user + "#" + passwd + '\0';
     QByteArray ba = send_data.toLatin1();
 
-    //client->SetData((char*)ba.data());
-    client->SetData((send_data.toUtf8()));
+    client->SetData((char*)ba.data());
     qDebug("buff = %s",ba.data());
 
     pthread_t send;
@@ -100,6 +99,10 @@ char SignUp::SignInUpRequest(QString type, QString user, QString passwd)
     recv(client->GetSocket(), buff, 8, 0);
     if (QString::localeAwareCompare(type,"up") == 0)
         client->CloseSocket();
+    else
+        temp_client_ = client;
+
+    delete client_tcp;
 
     if (buff[0] != '#' )
     {

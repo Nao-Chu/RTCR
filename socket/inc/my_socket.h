@@ -6,6 +6,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
+#include <list>
+
 typedef struct sockaddr_in SAIN;
 typedef struct sockaddr SA;
 const int port_ = 5180;
@@ -13,6 +15,7 @@ const int port_ = 5180;
 class MySocket
 {
 public:
+	virtual ~MySocket() = 0;
 	virtual int GetSocket() = 0;
 	virtual SAIN GetAddr() = 0;
 	virtual void SetAddr() = 0;
@@ -48,6 +51,7 @@ public:
 	{
 		close(client_socket_);
 	}
+	Client& operator=(Client* c);
 private:
 	int client_socket_;
 	SAIN client_addr_;
@@ -125,14 +129,16 @@ private:
 class User
 {
 public: 
-	enum {max_number_ = 100};
-	int sockets_[max_number_];
+	void AddSocket(int socket);
+	void DelSocket(int socket);
+	std::list<int> GetSocket();
 	static User* GetSingleton()
 	{
 		return user_;
 	}
 
 private:
+	std::list<int> sockets_;
 	User();
 	static User* user_;
 };

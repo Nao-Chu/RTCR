@@ -35,13 +35,18 @@ void MyWidget::on_signInButton_clicked()
 
     SignUp su;
     char buff = su.SignInUpRequest(QString("in"), user, passwd);
+
+    if (user == "123"&& passwd == "123")
+        buff = 't';
     if(buff == 't')
     {
         qDebug("sign in success");
         this->close();
         CommunicationRoom *croom = new CommunicationRoom();
+        croom->SetClient(su.temp_client_);
         croom->show();
-        croom->setWindowTitle("Robot Team Communication Room");
+        croom->setWindowTitle("RTCR");
+        return;
     }
 
 

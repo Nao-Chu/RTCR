@@ -15,7 +15,6 @@ class SignUp : public QWidget
 public:
     explicit SignUp(QWidget *parent = 0);
     ~SignUp();
-    char SignInUpRequest(QString type, QString user, QString passwd);
     
 private slots:
     void on_quit_clicked();
@@ -26,6 +25,12 @@ private slots:
 
 private:
     Ui::SignUp *ui;
+
+public:
+    MySocket* temp_client_;
+    char SignInUpRequest(QString type, QString user, QString passwd);
+
+
 };
 
 #endif // SIGNUP_H

@@ -26,7 +26,7 @@ int main()
 		if((accept_socket = server_tcp->Accept()) == -1)
 			continue;
 		
-		temp->sockets_[accept_socket] = accept_socket;
+		temp->AddSocket(accept_socket);
 
 		pthread_create(&server_id, NULL, Data::ServerRecvData, (void*)&accept_socket);
 	}

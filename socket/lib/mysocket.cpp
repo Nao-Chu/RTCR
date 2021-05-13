@@ -8,6 +8,16 @@
 
 #include <iostream>
 
+
+/* 
+ * class :  MySocket
+ * author:  ZZP
+ */
+MySocket::~MySocket()
+{
+
+}
+
 /* 
  * class :  Client 
  * author:  ZZP
@@ -33,6 +43,15 @@ void Client::SetAddr()
 	client_addr_.sin_family = AF_INET;
 	client_addr_.sin_port   = htons(port_);
 	client_addr_.sin_addr.s_addr = INADDR_ANY;
+}
+Client& Client::operator=(const Client* c)
+{
+	if (this == c)
+		return *this;
+
+	Client* temp = new Client;
+	temp = c;
+	return *temp;
 }
 
 
@@ -215,6 +234,7 @@ void* Data::ClientSendData(void* p)
 	}
 
 	send_len = send(socket,buff,send_len,0);
+	std::cout << "socket = " << socket << std::endl;
 	if (send_len < 0){
 		std::cout << "send end\n";
 		return (void*)-1;
@@ -237,7 +257,7 @@ void* Data::ServerRecvData(void* s)
 		std::cout << "recv: " << buff << std::endl;
 		if (recv_len <= 0){
 			std::cout << "recv end\n"; 
-			temp->sockets_[socket] = 0;
+			temp->DelSocket(socket);
 			break;
 		}
 		
@@ -260,12 +280,13 @@ void Data::ServerSendData(char* b)
 
 	
 	User* temp = User::GetSingleton();
-	for(int i = 0; i < User::max_number_; i++)
+	std::list<int> s = temp->GetSocket();
+	std::list<int>::iterator it = s.begin();
+	for (; it != s.end(); ++it)
 	{
-		if (temp->sockets_[i] == 0)
-			continue;
-
-		send_len = send(temp->sockets_[i], buff, send_len, 0);
+		std::cout << "send buff" << buff;
+		std::cout << " socket = " << *it << std::endl;
+		send_len = send(*it, buff, send_len, 0);
 		if(send_len < 0)
 		{
 			std::cout << "send error\n";
@@ -280,9 +301,22 @@ void Data::ServerSendData(char* b)
  * class :  User 
  * author:  ZZP
  */
-User::User() : sockets_{0}
+User::User()
 {
 }
 User* User::user_ = new User;
 
+void User::AddSocket(int socket)
+{
+	sockets_.push_back(socket);
+}
 
+void User::DelSocket(int socket)
+{
+	sockets_.remove(socket);
+}
+
+std::list<int> User::GetSocket()
+{
+	return sockets_;
+}

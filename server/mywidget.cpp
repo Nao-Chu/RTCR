@@ -58,7 +58,7 @@ void* Accept(void* t)
         if ((accept_socket = server_tcp->Accept()) == -1)
             continue;
 
-        temp->sockets_[accept_socket] = accept_socket;
+        temp->AddSocket(accept_socket);
         if (pthread_create(&server_sign, NULL, SignInUp, (void*)&accept_socket) == -1)
             continue;
         pthread_join(server_sign, NULL);
