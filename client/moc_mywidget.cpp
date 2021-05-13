@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mywidget.h'
 **
-** Created: Thu May 13 12:15:53 2021
+** Created: Thu May 13 15:01:12 2021
 **      by: The Qt Meta Object Compiler version 67 (Qt 5.0.0)
 **
 ** WARNING! All changes made in this file will be lost!

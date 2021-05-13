@@ -27,6 +27,7 @@ private:
 public:
     void Communicate();
     void SetClient(MySocket* client);
+
 };
 
 #endif // COMMUNICATIONROOM_H

@@ -3,6 +3,7 @@
 
 #include <QMessageBox>
 
+
 MyWidget::MyWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MyWidget)
@@ -43,8 +44,8 @@ void MyWidget::on_signInButton_clicked()
         qDebug("sign in success");
         this->close();
         CommunicationRoom *croom = new CommunicationRoom();
-        croom->SetClient(su.temp_client_);
         croom->show();
+        croom->SetClient(su.temp_client_);
         croom->setWindowTitle("RTCR");
         return;
     }

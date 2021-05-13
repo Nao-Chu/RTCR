@@ -44,16 +44,6 @@ void Client::SetAddr()
 	client_addr_.sin_port   = htons(port_);
 	client_addr_.sin_addr.s_addr = INADDR_ANY;
 }
-Client& Client::operator=(const Client* c)
-{
-	if (this == c)
-		return *this;
-
-	Client* temp = new Client;
-	temp = c;
-	return *temp;
-}
-
 
 
 
@@ -202,43 +192,39 @@ Data::~Data()
 {
 }
 
-void* Data::ClientRecvData(void* p)
+int Data::ClientRecvData(void* p)
 {
-	Client client = *(Client*)p;
-	int socket = client.GetSocket();
+	Client* client = (Client*)p;
+
+	int socket = client->GetSocket();
 
 	char buff[recv_max_data_];
-	int recv_len;
-	while(1)
-	{
-		memset(buff,0,sizeof(buff));
-		recv_len = recv(socket, buff, sizeof(buff), 0);
-		if (recv_len <= 0){
-			std::cout << "recv end\n"; 
-			break;
-		}
-		client.SetData(buff);
-		std::cout << "$:" << buff << std::endl;
+	memset(buff, 0, recv_max_data_);
+
+	int len = recv(socket, buff, recv_max_data_, 0);
+	if (len <= 0){
+		std::cout << "recv end\n"; 
+		return -1;
 	}
+	std::cout << "buff: " << buff << std::endl;
+	client->SetData(buff);
+	std::cout << "client &: " << (void*)client<< std::endl;
+	
 	return 0;
 }
 
-void* Data::ClientSendData(void* p)
+int Data::ClientSendData(void* p)
 {
 	Client client = *(Client*)p;
 	int socket = client.GetSocket();
-	int send_len;
-	char* buff = (char*)client.GetData();
-	for (send_len = 0; buff[send_len] != '\0'; ++send_len)
-	{
-	}
+	int send_len = client.GetSendLen();
 
-	send_len = send(socket,buff,send_len,0);
-	std::cout << "socket = " << socket << std::endl;
-	if (send_len < 0){
+	send_len = send(socket, client.GetData(), send_len, 0);
+	if (send_len <= 0){
 		std::cout << "send end\n";
-		return (void*)-1;
+		return -1;
 	}
+	std::cout << "send end\n";
 	return 0;
 }
 
@@ -253,41 +239,30 @@ void* Data::ServerRecvData(void* s)
 	{
 		memset(buff, 0, sizeof(buff));
 		recv_len = recv(socket, buff, sizeof(buff), 0);
-		usleep(10000);
-		std::cout << "recv: " << buff << std::endl;
+		std::cout << "sock: " << socket << std::endl;
 		if (recv_len <= 0){
 			std::cout << "recv end\n"; 
 			temp->DelSocket(socket);
 			break;
 		}
 		
-		ServerSendData(buff);
+		ServerSendData(buff, recv_len);
 	}
 	return 0;
 }
 
-void Data::ServerSendData(char* b)
+void Data::ServerSendData(char* b, int len)
 {
-	char buff[send_max_data_];
-	memset(buff, 0, recv_max_data_);
-
-	int send_len = 0;
-	for (; b[send_len] != '\0'; ++send_len)
-	{
-		buff[send_len] = b[send_len];
-	}
-	buff[++send_len] = '\0';
-
-	
 	User* temp = User::GetSingleton();
 	std::list<int> s = temp->GetSocket();
 	std::list<int>::iterator it = s.begin();
+
 	for (; it != s.end(); ++it)
 	{
-		std::cout << "send buff" << buff;
-		std::cout << " socket = " << *it << std::endl;
-		send_len = send(*it, buff, send_len, 0);
-		if(send_len < 0)
+		std::cout << "send buff: " << b;
+		std::cout << " \nsocket = " << *it << std::endl;
+		len = send(*it, b, len, 0);
+		if(len <= 0)
 		{
 			std::cout << "send error\n";
 		}

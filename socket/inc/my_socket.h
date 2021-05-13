@@ -22,6 +22,8 @@ public:
 	virtual void* GetData() = 0;
 	virtual void SetData(void*) = 0;
 	virtual void CloseSocket() = 0;
+	virtual int GetSendLen() = 0;
+	virtual void SetSendLen(int sendlen) = 0;
 };
 
 
@@ -51,11 +53,19 @@ public:
 	{
 		close(client_socket_);
 	}
-	Client& operator=(Client* c);
+	virtual int GetSendLen()
+	{
+		return client_sendlen_;
+	}
+	virtual void SetSendLen(int sendlen)
+	{
+		client_sendlen_ = sendlen;
+	}
 private:
 	int client_socket_;
 	SAIN client_addr_;
 	void* client_data_;
+	int client_sendlen_;
 };
 
 class Server: public MySocket
@@ -84,10 +94,19 @@ public:
 	{
 		close(server_socket_);
 	}
+	virtual int GetSendLen()
+	{
+		return server_sendlen_;
+	}
+	virtual void SetSendLen(int sendlen)
+	{
+		server_sendlen_ = sendlen;
+	}
 private:
 	int server_socket_;
 	SAIN server_addr_;
 	void* server_data_;
+	int server_sendlen_;
 };
 
 
@@ -115,10 +134,10 @@ class Data
 public: 
 	Data();
 	~Data();
-	static void* ClientRecvData(void* p);
-	static void* ClientSendData(void* p);
+	int ClientRecvData(void* p);
+	int ClientSendData(void* p);
 	static void* ServerRecvData(void* s);
-	static void ServerSendData(char* b);
+	static void ServerSendData(char* b, int len);
 
 private:
 	static const int send_max_data_ = 1024;

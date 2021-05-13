@@ -87,13 +87,13 @@ char SignUp::SignInUpRequest(QString type, QString user, QString passwd)
     QByteArray ba = send_data.toLatin1();
 
     client->SetData((char*)ba.data());
+    client->SetSendLen(send_data.length());
     qDebug("buff = %s",ba.data());
 
-    pthread_t send;
-    if (pthread_create(&send, NULL, Data::ClientSendData, (void*)client) == -1)
-        qDebug("pthread_create send error");
+    Data data;
+    if (data.ClientSendData(client) == -1)
+        qDebug("ClientSendData error");
 
-    pthread_join(send,NULL);
     char buff[8];
     memset(buff, 0, 8);
     recv(client->GetSocket(), buff, 8, 0);
