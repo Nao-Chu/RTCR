@@ -206,9 +206,6 @@ int Data::ClientRecvData(void* p)
 		return -1;
 	}
 	client->SetData(buff);
-	std::cout << "buff: " << buff << std::endl;
-	char* pd = (char*)client->GetData();
-	std::cout << "pd: " << pd << std::endl;
 	
 	return 0;
 }
