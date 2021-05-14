@@ -29,11 +29,11 @@ void CommunicationRoom::on_sendButton_clicked()
     ui->sendEdit->clear();
 
     QByteArray ba = text_data.toLatin1();
-    client_->SetData((char*)ba.data());
-    client_->SetSendLen(text_data.length());
+    client_->SetData(ba.data());
+    client_->SetSendLen(text_data.length() + 1);
 
     qDebug("data = %s",ba.data());
-
+    qDebug("dlen = %d",text_data.length());
     Data data;
     if (data.ClientSendData(client_) == -1)
         qDebug("ClientSendData error");
@@ -75,6 +75,7 @@ void* RecvServerData(void* p)
             qDebug("clientRecvData error");
             break;
         }
+        qDebug("Getdata = %p", (void*)client);
         char* buff = (char*)client->GetData();
         qDebug("Getdata = %s", buff);
         pd.u->recvBrowser->append(buff);

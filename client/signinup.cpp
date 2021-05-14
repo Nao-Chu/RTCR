@@ -109,7 +109,7 @@ char SignUp::SignInUpRequest(QString type, QString user, QString passwd)
         qDebug("recv error");
         return 'e';
     }
-
+    qDebug("recv success, buff = %s", buff);
     return buff[1];
 
 }

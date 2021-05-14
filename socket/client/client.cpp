@@ -8,15 +8,8 @@
 #include <sys/socket.h>
  
 using namespace std;
- 
-pthread_t client_id;
-void* recvll(void* p);
-class BB
-{
-public:
-	int tt(void *p);
-};
 
+void* recvll(void* p);
 int main(int argc, char** argv)
 {
 	MySocket* client = new Client();
@@ -47,23 +40,13 @@ int main(int argc, char** argv)
 void* recvll(void* p)
 {
 	Data test;
-	test.ClientRecvData(p);
-	BB hh;
-	//hh.tt(p);
-
-}
-
-int BB::tt(void *p)
-{
 	Client* client = (Client*)p;
-	int socket = client->GetSocket();
-	cout << "socket = " << socket << endl;
+	if(test.ClientRecvData(client) == -1)
+	{
+		cout << "error\n";
+	}
+	char* buff = (char*)client->GetData();
+	cout << "data = " << buff << endl;
 
-	char buff[1024];
-	memset(buff, 0, 1024);
-	int x= recv(socket, buff, 40, 0);
-	cout << "x = " << x << endl;
-	cout << "buff = " << buff << endl;
-
-	return 0;
 }
+

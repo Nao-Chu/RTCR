@@ -198,17 +198,17 @@ int Data::ClientRecvData(void* p)
 
 	int socket = client->GetSocket();
 
-	char buff[recv_max_data_];
-	memset(buff, 0, recv_max_data_);
+	char* buff = (char*)client->GetData();
 
 	int len = recv(socket, buff, recv_max_data_, 0);
 	if (len <= 0){
 		std::cout << "recv end\n"; 
 		return -1;
 	}
-	std::cout << "buff: " << buff << std::endl;
 	client->SetData(buff);
-	std::cout << "client &: " << (void*)client<< std::endl;
+	std::cout << "buff: " << buff << std::endl;
+	char* pd = (char*)client->GetData();
+	std::cout << "pd: " << pd << std::endl;
 	
 	return 0;
 }
@@ -221,10 +221,11 @@ int Data::ClientSendData(void* p)
 
 	send_len = send(socket, client.GetData(), send_len, 0);
 	if (send_len <= 0){
-		std::cout << "send end\n";
+		std::cout << "send error\n";
 		return -1;
 	}
 	std::cout << "send end\n";
+	std::cout << "len = " << send_len << std::endl;
 	return 0;
 }
 

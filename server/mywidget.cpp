@@ -62,6 +62,7 @@ void* Accept(void* t)
         if (pthread_create(&server_sign, NULL, SignInUp, (void*)&accept_socket) == -1)
             continue;
         pthread_join(server_sign, NULL);
+        qDebug("in up end");
         pthread_create(&server_id, NULL, Data::ServerRecvData, (void*)&accept_socket);
     }
 
