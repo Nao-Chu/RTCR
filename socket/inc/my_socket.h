@@ -7,6 +7,8 @@
 #include <unistd.h>
 
 #include <list>
+#include <string>
+#include <map>
 
 typedef struct sockaddr_in SAIN;
 typedef struct sockaddr SA;
@@ -148,16 +150,18 @@ private:
 class User
 {
 public: 
-	void AddSocket(int socket);
-	void DelSocket(int socket);
+	void AddUserInf(int socket, std::string name);
+	void DelUserInf(int socket);
 	std::list<int> GetSocket();
+	std::list<std::string> GetName();
+	std::string FindName(int i);
 	static User* GetSingleton()
 	{
 		return user_;
 	}
 
 private:
-	std::list<int> sockets_;
+	std::map<int, std::string> user_inf_;
 	User();
 	static User* user_;
 };

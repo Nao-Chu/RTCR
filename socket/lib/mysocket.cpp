@@ -5,7 +5,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <netinet/tcp.h>
-
+#include <errno.h>
 #include <iostream>
 
 
@@ -240,7 +240,7 @@ void* Data::ServerRecvData(void* s)
 		std::cout << "sock: " << socket << std::endl;
 		if (recv_len <= 0){
 			std::cout << "recv end\n"; 
-			temp->DelSocket(socket);
+			temp->DelUserInf(socket);
 			break;
 		}
 		
@@ -279,17 +279,40 @@ User::User()
 }
 User* User::user_ = new User;
 
-void User::AddSocket(int socket)
+void User::AddUserInf(int socket, std::string name)
 {
-	sockets_.push_back(socket);
+	user_inf_.insert(std::pair<int, std::string>(socket, name));
 }
 
-void User::DelSocket(int socket)
+void User::DelUserInf(int socket)
 {
-	sockets_.remove(socket);
+	user_inf_.erase(socket);
 }
 
 std::list<int> User::GetSocket()
 {
-	return sockets_;
+	std::list<int> key;
+	std::map<int, std::string>::const_iterator it = user_inf_.begin();
+	for( ; it != user_inf_.end(); ++it)
+	{
+		key.push_back(it->first);
+	}
+	return key;
+}
+
+std::list<std::string> User::GetName()
+{
+	std::list<std::string> value;
+	std::map<int, std::string>::const_iterator it = user_inf_.begin();
+	for( ; it != user_inf_.end(); ++it)
+	{
+		value.push_back(it->second);
+	}
+	return value;
+}
+
+std::string User::FindName(int i)
+{
+	std::map<int, std::string>::iterator it = user_inf_.find(i);
+	return it->second;
 }

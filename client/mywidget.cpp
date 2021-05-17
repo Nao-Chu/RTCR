@@ -39,14 +39,19 @@ void MyWidget::on_signInButton_clicked()
 
     if (user == "123"&& passwd == "123")
         buff = 't';
+    else if (user == "234" && passwd == "234")
+        buff = 't';
     if(buff == 't')
     {
         qDebug("sign in success");
         this->close();
         CommunicationRoom *croom = new CommunicationRoom();
-        croom->show();
         croom->SetClient(su.temp_client_);
+        croom->SetUserName(user);
         croom->setWindowTitle("RTCR");
+
+        croom->show();
+
         return;
     }
 

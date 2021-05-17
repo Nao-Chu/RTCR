@@ -25,7 +25,8 @@ CommunicationRoom::~CommunicationRoom()
 
 void CommunicationRoom::on_sendButton_clicked()
 {
-    QString text_data = ui->sendEdit->toPlainText();
+    QString name = GetUserName();
+    QString text_data = name + ui->sendEdit->toPlainText();
     ui->sendEdit->clear();
 
     QByteArray ba = text_data.toLatin1();
