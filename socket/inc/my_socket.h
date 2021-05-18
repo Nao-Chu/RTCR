@@ -73,16 +73,19 @@ class Server: public MySocket
 public:
 	Server();
 	virtual ~Server();
-	virtual int GetSocket()
+	virtual int GetSocket() const
 	{
 		return server_socket_;
 	}
-	virtual SAIN GetAddr()
+
+	virtual SAIN GetAddr() const
 	{
 		return server_addr_;
 	}
 	virtual void SetAddr();
-	virtual void* GetData()
+	j
+
+	virtual void* GetData() const
 	{
 		return server_data_;
 	}
@@ -90,15 +93,17 @@ public:
 	{
 		server_data_ = data;
 	}
-	virtual void CloseSocket()
+
+	virtual void CloseSocket() const
 	{
 		close(server_socket_);
 	}
-	virtual int GetSendLen()
+
+	virtual int GetSendLen() const
 	{
 		return server_sendlen_;
 	}
-	virtual void SetSendLen(int sendlen)
+	virtual void SetSendLen(const int sendlen)
 	{
 		server_sendlen_ = sendlen;
 	}
@@ -114,7 +119,7 @@ class MyConnect
 {
 public:
 	MyConnect();
-	MyConnect(MySocket* socket) { 
+	MyConnect(const MySocket* socket) { 
 		tcp_socket_ = socket->GetSocket();
 		tcp_addr_   = socket->GetAddr();
 	}
