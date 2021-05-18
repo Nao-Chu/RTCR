@@ -23,10 +23,19 @@ private slots:
 private:
     Ui::CommunicationRoom *ui;
     MySocket* client_;
+    QString m_name_;
 
 public:
     void Communicate();
     void SetClient(MySocket* client);
+    void SetUserName(QString name)
+    {
+        m_name_ = name + ": \n    ";
+    }
+    QString GetUserName()
+    {
+        return m_name_;
+    }
 
 };
 
