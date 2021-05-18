@@ -1,7 +1,8 @@
-#include "signinup.h"
+#include "signup.h"
 #include "ui_signup.h"
 
 #include "mywidget.h"
+#include "sendmessstate.h"
 
 #include <pthread.h>
 #include <unistd.h>
@@ -63,7 +64,7 @@ void SignUp::on_sure_clicked()
     }
 
 
-    char buff = SignInUpRequest(QString("up"), user, passwd);
+    char buff = SENDMESSFNC::SignInUpRequest(QString("up"), user, passwd);
     if(buff == 't')
     {
         qDebug("sign up success");
@@ -76,40 +77,3 @@ void SignUp::on_sure_clicked()
     }
 }
 
-char SignUp::SignInUpRequest(QString type, QString user, QString passwd)
-{
-    MySocket* client = new Client();
-    client->SetAddr();
-
-    MyConnect* client_tcp = new MyConnect(client);
-    client_tcp->TcpConnect();
-    QString send_data = type + "#" + user + "#" + passwd + '\0';
-    QByteArray ba = send_data.toLatin1();
-
-    client->SetData((char*)ba.data());
-    client->SetSendLen(send_data.length());
-    qDebug("buff = %s",ba.data());
-
-    Data data;
-    if (data.ClientSendData(client) == -1)
-        qDebug("ClientSendData error");
-
-    char buff[8];
-    memset(buff, 0, 8);
-    recv(client->GetSocket(), buff, 8, 0);
-    if (QString::localeAwareCompare(type,"up") == 0)
-        client->CloseSocket();
-    else
-        temp_client_ = client;
-
-    delete client_tcp;
-
-    if (buff[0] != '#' )
-    {
-        qDebug("recv error");
-        return 'e';
-    }
-    qDebug("recv success, buff = %s", buff);
-    return buff[1];
-
-}

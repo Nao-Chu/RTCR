@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-#include <signinup.h>
+#include <signup.h>
 #include <communicationroom.h>
 
 namespace Ui {

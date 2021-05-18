@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'signup.h'
 **
-** Created: Wed May 12 16:31:40 2021
+** Created: Tue May 18 15:36:01 2021
 **      by: The Qt Meta Object Compiler version 67 (Qt 5.0.0)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -20,8 +20,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_SignUp_t {
-    QByteArrayData data[6];
-    char stringdata[71];
+    QByteArrayData data[4];
+    char stringdata[41];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -33,12 +33,9 @@ static const qt_meta_stringdata_SignUp_t qt_meta_stringdata_SignUp = {
 QT_MOC_LITERAL(0, 0, 6),
 QT_MOC_LITERAL(1, 7, 15),
 QT_MOC_LITERAL(2, 23, 0),
-QT_MOC_LITERAL(3, 24, 15),
-QT_MOC_LITERAL(4, 40, 24),
-QT_MOC_LITERAL(5, 65, 4)
+QT_MOC_LITERAL(3, 24, 15)
     },
     "SignUp\0on_quit_clicked\0\0on_sure_clicked\0"
-    "on_cPasswd_linkActivated\0link\0"
 };
 #undef QT_MOC_LITERAL
 
@@ -48,7 +45,7 @@ static const uint qt_meta_data_SignUp[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       3,   14, // methods
+       2,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -56,14 +53,12 @@ static const uint qt_meta_data_SignUp[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   29,    2, 0x08,
-       3,    0,   30,    2, 0x08,
-       4,    1,   31,    2, 0x08,
+       1,    0,   24,    2, 0x08,
+       3,    0,   25,    2, 0x08,
 
  // slots: parameters
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString,    5,
 
        0        // eod
 };
@@ -78,6 +73,7 @@ void SignUp::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         default: ;
         }
     }
+    Q_UNUSED(_a);
 }
 
 const QMetaObject SignUp::staticMetaObject = {
@@ -105,13 +101,13 @@ int SignUp::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 3)
+        if (_id < 2)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 3;
+        _id -= 2;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 3)
+        if (_id < 2)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 3;
+        _id -= 2;
     }
     return _id;
 }

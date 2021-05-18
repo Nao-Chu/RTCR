@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mywidget.cpp \
     communicationroom.cpp \
-    signinup.cpp
+    signup.cpp \
+    sendmessstate.cpp
 
 HEADERS  += mywidget.h \
     communicationroom.h \
-    signinup.h
+    signup.h \
+    sendmessstate.h
 
 FORMS    += mywidget.ui \
     signup.ui \

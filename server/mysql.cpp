@@ -7,6 +7,7 @@
 
 MySql::MySql()
 {
+    InitSql();
 }
 
 void MySql::InitSql()
@@ -34,13 +35,13 @@ void MySql::CreateTable()
 
 }
 
-bool MySql::SignInOp(QString name, QString passward)
+bool MySql::SignInOp(const QString& name, const QString& passward)
 {
     QString str = QString("select * from users where name='%1' and passwd='%2'").arg(name).arg(passward);
     return SqlLookup(str);
 }
 
-bool MySql::SignUpOp(QString name, QString passward)
+bool MySql::SignUpOp(const QString& name, const QString& passward)
 {
     QString str = QString("select * from users where name='%1'").arg(name);
 
@@ -52,7 +53,7 @@ bool MySql::SignUpOp(QString name, QString passward)
 
 }
 
-bool MySql::SqlLookup(QString str)
+bool MySql::SqlLookup(const QString& str)
 {
     query = new QSqlQuery();
     query->exec(str);

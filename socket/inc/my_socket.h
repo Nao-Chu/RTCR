@@ -18,14 +18,14 @@ class MySocket
 {
 public:
 	virtual ~MySocket() = 0;
-	virtual int GetSocket() = 0;
-	virtual SAIN GetAddr() = 0;
+	virtual int GetSocket() const = 0;
+	virtual SAIN GetAddr() const = 0;
 	virtual void SetAddr() = 0;
-	virtual void* GetData() = 0;
+	virtual void* GetData() const = 0;
 	virtual void SetData(void*) = 0;
-	virtual void CloseSocket() = 0;
-	virtual int GetSendLen() = 0;
-	virtual void SetSendLen(int sendlen) = 0;
+	virtual void CloseSocket() const = 0;
+	virtual int GetSendLen() const = 0;
+	virtual void SetSendLen(const int sendlen) = 0;
 };
 
 
@@ -34,16 +34,16 @@ class Client : public MySocket
 public:
 	Client();
 	virtual ~Client();
-	virtual int GetSocket()
+	virtual int GetSocket() const
 	{
 		return client_socket_;
 	}
-	virtual SAIN GetAddr()
+	virtual SAIN GetAddr() const
 	{
 		return client_addr_;
 	}
 	virtual void SetAddr();
-	virtual void* GetData()
+	virtual void* GetData() const
 	{
 		return client_data_;
 	}
@@ -51,15 +51,15 @@ public:
 	{
 		client_data_ = data;
 	}
-	virtual void CloseSocket()
+	virtual void CloseSocket() const
 	{
 		close(client_socket_);
 	}
-	virtual int GetSendLen()
+	virtual int GetSendLen() const
 	{
 		return client_sendlen_;
 	}
-	virtual void SetSendLen(int sendlen)
+	virtual void SetSendLen(const int sendlen)
 	{
 		client_sendlen_ = sendlen;
 	}
@@ -85,7 +85,7 @@ public:
 		return server_addr_;
 	}
 	virtual void SetAddr();
-	j
+	
 
 	virtual void* GetData() const
 	{
@@ -143,13 +143,8 @@ public:
 	~Data();
 	int ClientRecvData(void* p);
 	int ClientSendData(void* p);
-	static void* ServerRecvData(void* s);
-	static void ServerSendData(char* b, int len);
-
-private:
-	static const int send_max_data_ = 1024;
-	static const int recv_max_data_ = 1024;
-
+	int ServerRecvData(int socket);
+	int ServerSendData(char* b, int len);
 };
 
 class User
@@ -170,4 +165,13 @@ private:
 	User();
 	static User* user_;
 };
+
+namespace MESS 
+{
+	extern const char* communicate;
+	extern const char* signin;
+	extern const char* signup;
+	extern const char* users;
+}
+
 #endif

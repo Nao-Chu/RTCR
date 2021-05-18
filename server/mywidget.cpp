@@ -1,13 +1,13 @@
 #include "mywidget.h"
 #include "ui_mywidget.h"
-#include "mysql.h"
+#include "recvmessstate.h"
 
-#include <my_socket.h>
 #include <pthread.h>
 #include <QDebug>
 
-void* SignInUp(void *s);
+void* MessageState(void *s);
 void* Accept(void* t);
+
 MyWidget::MyWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MyWidget)
@@ -49,71 +49,66 @@ void MyWidget::OpenServer()
 void* Accept(void* t)
 {
     MyConnect* server_tcp = (MyConnect*)t;
-    pthread_t server_id;
-    pthread_t server_sign;
+    pthread_t server_Mes;
     int accept_socket;
     while(true)
     {
         if ((accept_socket = server_tcp->Accept()) == -1)
             continue;
 
-        if (pthread_create(&server_sign, NULL, SignInUp, (void*)&accept_socket) == -1)
-            continue;
-        pthread_join(server_sign, NULL);
-        qDebug("in up end");
-        pthread_create(&server_id, NULL, Data::ServerRecvData, (void*)&accept_socket);
+        if (pthread_create(&server_Mes, NULL, MessageState, (void*)&accept_socket) == -1)
+            qDebug("pthread_create server_Mes error");
     }
 
 }
 
-void* SignInUp(void* s)
+void* MessageState(void* s)
 {
-    MySql *mysql = new MySql();
     int socket = *(int*)s;
-    char buff[30];
-    int recv_len;
-    memset(buff, 0, 30);
-    recv_len = recv(socket, buff, 30, 0);
-    if (recv_len <= 0)
+    int ret = 0;
+    while(true)
     {
-        qDebug("recv fail");
-        return 0;
+        char buff[30];
+        memset(buff, 0, 30);
+
+        int recv_len = recv(socket, buff, 30, 0);
+        if (recv_len <= 0)
+        {
+            qDebug("recv fail");
+            break;
+        }
+
+        QString data = QString(QLatin1String(buff));
+        qDebug("recv data = %s",qPrintable(data));
+        QStringList list = data.split("#");
+
+        if (list[0] == MESS::communicate){
+            ret = MESSFNC::Communicate(list[1]);
+
+        } else if (list[0] == MESS::signin){
+            MySql mysql;
+            ret = MESSFNC::SignInUp(&mysql, &MySql::SignInOp, list[1], list[2], socket);
+
+        } else if (list[0] == MESS::signup){
+            MySql mysql;
+            ret = MESSFNC::SignInUp(&mysql, &MySql::SignUpOp, list[1], list[2], socket);
+
+        } else if (list[0] == MESS::users){
+            ret = MESSFNC::Users(socket, list[1]);
+
+        } else {
+            qDebug("server recv error");
+            break;
+        }
+
+        if(ret != 0)
+        {
+            qDebug("ret != 0");
+            break;
+        }
     }
 
-    QString data = QString(QLatin1String(buff));
-    qDebug("recv data = %s",qPrintable(data));
-
-    QStringList list = data.split("#");
-    if (list.length() != 3)
-        return 0;
-
-    QString user = list[1];
-    QString passwd = list[2];
-    bool ret = false;
-
-    if (list[0] == "up")
-        ret = mysql->SignUpOp(user, passwd);
-    else if (list[0] == "in")
-        ret = mysql->SignInOp(user, passwd);
-    else
-        return 0;
-
-    const char* sendbuff;
-    if (ret)
-        sendbuff = "#t";
-    else
-        sendbuff = "#f";
-
-    if (list[0] == "in" )
-    {
-        User* temp = User::GetSingleton();
-        temp->AddUserInf(socket, user.toStdString());
-    }
-
-
-    qDebug("send = %s",sendbuff);
-    send(socket, sendbuff, 2, 0);
-    return 0;
+    return ret == 0 ? (void*)0 : (void*)-1;
 }
 
 void MyWidget::on_autoRun_clicked(bool checked)

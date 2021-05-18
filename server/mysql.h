@@ -10,9 +10,9 @@ public:
     MySql();
     void InitSql();
     void CreateTable();
-    bool SignInOp(QString name, QString passward);
-    bool SignUpOp(QString name, QString passward);
-    bool SqlLookup(QString str);
+    bool SignInOp(const QString& name, const QString& passward);
+    bool SignUpOp(const QString& name, const QString& passward);
+    bool SqlLookup(const QString& str);
 
 private:
     QSqlQuery* query;

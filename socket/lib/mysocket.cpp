@@ -200,7 +200,7 @@ int Data::ClientRecvData(void* p)
 
 	char* buff = (char*)client->GetData();
 
-	int len = recv(socket, buff, recv_max_data_, 0);
+	int len = recv(socket, buff, 1024, 0);
 	if (len <= 0){
 		std::cout << "recv end\n"; 
 		return -1;
@@ -226,30 +226,30 @@ int Data::ClientSendData(void* p)
 	return 0;
 }
 
-void* Data::ServerRecvData(void* s)
+int Data::ServerRecvData(int socket)
 {
-	int socket = *(int *)s;
-	char buff[recv_max_data_];
-	int recv_len;
+	char buff[1024];
 
 	User* temp = User::GetSingleton();
+	int ret = 0;
 	while(true)
 	{
 		memset(buff, 0, sizeof(buff));
-		recv_len = recv(socket, buff, sizeof(buff), 0);
+		int recv_len = recv(socket, buff, sizeof(buff), 0);
 		std::cout << "sock: " << socket << std::endl;
 		if (recv_len <= 0){
 			std::cout << "recv end\n"; 
 			temp->DelUserInf(socket);
+			ret = -1;
 			break;
 		}
 		
-		ServerSendData(buff, recv_len);
+		ret = ServerSendData(buff, recv_len);
 	}
-	return 0;
+	return ret;
 }
 
-void Data::ServerSendData(char* b, int len)
+int Data::ServerSendData(char* b, int len)
 {
 	User* temp = User::GetSingleton();
 	std::list<int> s = temp->GetSocket();
@@ -263,8 +263,10 @@ void Data::ServerSendData(char* b, int len)
 		if(len <= 0)
 		{
 			std::cout << "send error\n";
+			return -1;
 		}
 	}
+	return 0;
 }
 
 
@@ -316,3 +318,8 @@ std::string User::FindName(int i)
 	std::map<int, std::string>::iterator it = user_inf_.find(i);
 	return it->second;
 }
+
+const char* MESS::communicate = "communicate";
+const char* MESS::signin = "signin"; 
+const char* MESS::signup = "signup";
+const char* MESS::users  = "users";

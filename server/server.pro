@@ -15,10 +15,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mywidget.cpp \
-    mysql.cpp
+    mysql.cpp \
+    recvmessstate.cpp
 
 HEADERS  += mywidget.h \
     mysql.h \
+    recvmessstate.h
 
 FORMS    += mywidget.ui
 

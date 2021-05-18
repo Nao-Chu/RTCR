@@ -1,6 +1,8 @@
 #include "communicationroom.h"
 #include "ui_communicationroom.h"
 
+#include "sendmessstate.h"
+
 void* RecvServerData(void* p);
 typedef struct PthreadData
 {
@@ -25,20 +27,12 @@ CommunicationRoom::~CommunicationRoom()
 
 void CommunicationRoom::on_sendButton_clicked()
 {
+    QString head = QString::fromUtf8(MESS::communicate);
     QString name = GetUserName();
-    QString text_data = name + ui->sendEdit->toPlainText();
+    QString text_data = name + ":\n" + ui->sendEdit->toPlainText();
     ui->sendEdit->clear();
 
-    QByteArray ba = text_data.toLatin1();
-    client_->SetData(ba.data());
-    client_->SetSendLen(text_data.length() + 1);
-
-    qDebug("data = %s",ba.data());
-    qDebug("dlen = %d",text_data.length());
-    Data data;
-    if (data.ClientSendData(client_) == -1)
-        qDebug("ClientSendData error");
-
+    SENDMESSFNC::SendDataToServer(head, text_data, client_);
 }
 
 void CommunicationRoom::Communicate()
@@ -56,6 +50,8 @@ void CommunicationRoom::SetClient(MySocket* client)
 {
     client_ = client;
     Communicate();
+    QString head = QString::fromUtf8(MESS::users);
+    SENDMESSFNC::SendDataToServer(head, m_name_, client_);
 }
 
 void CommunicationRoom::on_recvBrowser_textChanged()
@@ -76,10 +72,25 @@ void* RecvServerData(void* p)
             qDebug("clientRecvData error");
             break;
         }
-        qDebug("Getdata = %p", (void*)client);
-        char* buff = (char*)client->GetData();
-        qDebug("Getdata = %s", buff);
-        pd.u->recvBrowser->append(buff);
+
+        QString data = QString(QLatin1String((char*)client->GetData()) );
+        qDebug("recv data = %s",qPrintable(data));
+        QStringList list = data.split("#");
+
+        if (list[0] == MESS::communicate){
+            qDebug("Getdata = %s", qPrintable(list[1]));
+            pd.u->recvBrowser->append(list[1]);
+
+        } else if (list[0] == MESS::users){
+            list.removeFirst();
+            pd.u->listWidget->clear();
+            pd.u->listWidget->insertItems(0, list);
+
+        } else {
+            qDebug("client recv error");
+            break;
+        }
+
     }
 
     if (p != NULL)

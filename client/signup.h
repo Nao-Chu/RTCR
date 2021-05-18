@@ -20,15 +20,11 @@ private slots:
     void on_quit_clicked();
 
     void on_sure_clicked();
-
-    void on_cPasswd_linkActivated(const QString &link);
-
 private:
     Ui::SignUp *ui;
 
 public:
     MySocket* temp_client_;
-    char SignInUpRequest(QString type, QString user, QString passwd);
 
 
 };

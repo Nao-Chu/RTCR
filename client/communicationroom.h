@@ -30,7 +30,7 @@ public:
     void SetClient(MySocket* client);
     void SetUserName(QString name)
     {
-        m_name_ = name + ": \n    ";
+        m_name_ = name;
     }
     QString GetUserName()
     {

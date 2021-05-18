@@ -1,5 +1,6 @@
 #include "mywidget.h"
 #include "ui_mywidget.h"
+#include "sendmessstate.h"
 
 #include <QMessageBox>
 
@@ -34,27 +35,25 @@ void MyWidget::on_signInButton_clicked()
     user = ui->lineUsers->text();
     passwd = ui->linePasswd->text();
 
-    SignUp su;
-    char buff = su.SignInUpRequest(QString("in"), user, passwd);
+    char buff = SENDMESSFNC::SignInUpRequest(QString("in"), user, passwd);
 
     if (user == "123"&& passwd == "123")
         buff = 't';
     else if (user == "234" && passwd == "234")
         buff = 't';
+
     if(buff == 't')
     {
         qDebug("sign in success");
         this->close();
         CommunicationRoom *croom = new CommunicationRoom();
-        croom->SetClient(su.temp_client_);
         croom->SetUserName(user);
+        croom->SetClient(SENDMESSFNC::temp_client);
         croom->setWindowTitle("RTCR");
-
         croom->show();
 
         return;
     }
-
 
     if (buff == 'f')
     {
