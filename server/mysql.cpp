@@ -7,7 +7,6 @@
 
 MySql::MySql()
 {
-    InitSql();
 }
 
 void MySql::InitSql()

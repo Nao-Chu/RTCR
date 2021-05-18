@@ -49,9 +49,12 @@ void CommunicationRoom::Communicate()
 void CommunicationRoom::SetClient(MySocket* client)
 {
     client_ = client;
-    Communicate();
+
     QString head = QString::fromUtf8(MESS::users);
     SENDMESSFNC::SendDataToServer(head, m_name_, client_);
+
+    Communicate();
+
 }
 
 void CommunicationRoom::on_recvBrowser_textChanged()
@@ -67,12 +70,13 @@ void* RecvServerData(void* p)
     Data data;
     while(true)
     {
+        qDebug("test");
         if (data.ClientRecvData(client) == -1)
         {
             qDebug("clientRecvData error");
             break;
         }
-
+        qDebug("test1");
         QString data = QString(QLatin1String((char*)client->GetData()) );
         qDebug("recv data = %s",qPrintable(data));
         QStringList list = data.split("#");

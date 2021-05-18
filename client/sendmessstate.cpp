@@ -9,7 +9,7 @@ int SENDMESSFNC::SendDataToServer(const QString& head, const QString& senddata, 
 
     client->SetData((char*)ba.data());
     client->SetSendLen(send_data.length());
-    qDebug("buff = %s",ba.data());
+    qDebug("SendDataToServer: buff = %s",ba.data());
 
     Data data;
     if (data.ClientSendData(client) == -1){
@@ -36,16 +36,17 @@ char SENDMESSFNC::SignInUpRequest(const QString& type, const QString& user, cons
         return 'e';
     }
 
-    Data data;
+    /*Data data;
     if (data.ClientRecvData(client) == -1)
     {
         qDebug("ClientRecvData error");
         return 'e';
-    }
+    }*/
 
-    char* buff = new char;
-    memset(buff, 0 ,8);
-    buff = (char*)client->GetData();
+    char buff[1024];
+    recv(client->GetSocket(), buff, 1024, 0);
+    //char* buff = (char*)client->GetData();
+    qDebug("recv success, buff = %s", buff);
 
     if (QString::localeAwareCompare(type,"up") == 0)
         client->CloseSocket();
@@ -60,6 +61,6 @@ char SENDMESSFNC::SignInUpRequest(const QString& type, const QString& user, cons
         return 'e';
     }
 
-    qDebug("recv success, buff = %s", buff);
+
     return buff[1];
 }

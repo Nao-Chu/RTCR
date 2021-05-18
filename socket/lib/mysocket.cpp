@@ -205,6 +205,8 @@ int Data::ClientRecvData(void* p)
 		std::cout << "recv end\n"; 
 		return -1;
 	}
+	std::cout << "recv = " << buff << std::endl;
+	std::cout << "recv& = " << (void*)buff << std::endl;
 	client->SetData(buff);
 	
 	return 0;
@@ -221,8 +223,7 @@ int Data::ClientSendData(void* p)
 		std::cout << "send error\n";
 		return -1;
 	}
-	std::cout << "send end\n";
-	std::cout << "len = " << send_len << std::endl;
+	std::cout << "send len = " << send_len << std::endl;
 	return 0;
 }
 
