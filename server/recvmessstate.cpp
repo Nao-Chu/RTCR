@@ -3,7 +3,7 @@
 int MESSFNC::Communicate(const QString& senddata)
 {
     QString head = MESS::communicate;
-    QString send = head + "#" + senddata;
+    QString send = head + "#" + senddata + '\0';
     QByteArray ba = send.toLatin1();
     qDebug("Communicate send data: %s",qPrintable(send));
 
@@ -11,7 +11,7 @@ int MESSFNC::Communicate(const QString& senddata)
     int ret = data.ServerSendData(ba.data(), send.length());
     if (ret == -1)
     {
-        qDebug("ServerRecvData error");
+        qDebug("ServerSendData error");
     }
     return ret;
 }
@@ -34,6 +34,7 @@ int MESSFNC::SignInUp(MySql* ptr, bool (MySql::*func)(const QString&, const QStr
 
 int MESSFNC::Users(const int socket, QString user)
 {
+    qDebug("recv user = %s, to string = %s",qPrintable(user), user.toStdString());
     User* temp = User::GetSingleton();
     temp->AddUserInf(socket, user.toStdString());
     std::list<std::string> names = temp->GetName();

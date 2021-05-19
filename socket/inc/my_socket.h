@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <string.h>
 
 #include <list>
 #include <string>
@@ -22,7 +23,7 @@ public:
 	virtual SAIN GetAddr() const = 0;
 	virtual void SetAddr() = 0;
 	virtual void* GetData() const = 0;
-	virtual void SetData(void*) = 0;
+	virtual void SetData(char*) = 0;
 	virtual void CloseSocket() const = 0;
 	virtual int GetSendLen() const = 0;
 	virtual void SetSendLen(const int sendlen) = 0;
@@ -45,12 +46,14 @@ public:
 	virtual void SetAddr();
 	virtual void* GetData() const
 	{
-		return client_data_;
+		return (void*)client_data_;
 	}
-	virtual void SetData(void* data)
+	virtual void SetData(char* data)
 	{
-		client_data_ = data;
+		memset(client_data_, 0, 1024);
+		strcpy(client_data_, data);
 	}
+
 	virtual void CloseSocket() const
 	{
 		close(client_socket_);
@@ -66,7 +69,7 @@ public:
 private:
 	int client_socket_;
 	SAIN client_addr_;
-	void* client_data_;
+	char client_data_[1024];
 	int client_sendlen_;
 };
 
@@ -89,11 +92,12 @@ public:
 
 	virtual void* GetData() const
 	{
-		return server_data_;
+		return (void*)server_data_;
 	}
-	virtual void SetData(void* data)
+	virtual void SetData(char* data)
 	{
-		server_data_ = data;
+		memset(server_data_, 0, 1024);
+		strcpy(server_data_, data);
 	}
 
 	virtual void CloseSocket() const
@@ -112,7 +116,7 @@ public:
 private:
 	int server_socket_;
 	SAIN server_addr_;
-	void* server_data_;
+	char server_data_[1024];
 	int server_sendlen_;
 };
 

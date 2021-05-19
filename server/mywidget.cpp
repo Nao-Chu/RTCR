@@ -68,14 +68,14 @@ void* MessageState(void* s)
     int ret = 0;
     while(true)
     {
-        char buff[30];
-        memset(buff, 0, 30);
-
-        int recv_len = recv(socket, buff, 30, 0);
+        char buff[1024];
+        User* temp = User::GetSingleton();
+        int recv_len = recv(socket, buff, 1024, 0);
         if (recv_len <= 0)
         {
             qDebug("recv fail");
-            break;
+            temp->DelUserInf(socket);
+            continue;
         }
 
         QString data = QString(QLatin1String(buff));

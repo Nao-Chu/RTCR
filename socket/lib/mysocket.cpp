@@ -198,7 +198,7 @@ int Data::ClientRecvData(void* p)
 
 	int socket = client->GetSocket();
 
-	char* buff = (char*)client->GetData();
+	char buff[1024];
 
 	int len = recv(socket, buff, 1024, 0);
 	if (len <= 0){
