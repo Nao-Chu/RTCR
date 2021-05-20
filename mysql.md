@@ -90,7 +90,7 @@
 
 * 在该网站选取对应的版本下载`https://download.qt.io/archive/qt/`
 
-* 下载完使用` ./xxx.run`或`双击打开`运行
+* 下载完使用` sudo ./xxx.run`运行 (使用sudo安装，负责安装完会没权限，需要你sudo运行)
 
 * 安装时勾选`Source Components` (点击Qt 5.x.x 即可看到)
 

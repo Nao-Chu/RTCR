@@ -10,10 +10,10 @@
 
 namespace MESSFNC
 {
+    typedef bool (MySql::*inupFunc)(const QString&, const QString&);
     int Communicate(const QString& senddata);
 
-    int SignInUp(MySql* ptr, bool (MySql::*func)(const QString&, const QString&),
-                 const QString& name, const QString& passwd, const int socket);
+    int SignInUp(MySql* ptr, inupFunc f,const QString& name, const QString& passwd, const int socket);
 
     User* AddUser(const int socket, QString user);
     User* DelUser(const int socket, QString user);

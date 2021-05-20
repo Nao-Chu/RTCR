@@ -16,10 +16,10 @@ int MESSFNC::Communicate(const QString& senddata)
     return ret;
 }
 
-int MESSFNC::SignInUp(MySql* ptr, bool (MySql::*func)(const QString&, const QString&),
+int MESSFNC::SignInUp(MySql* ptr, inupFunc f,
              const QString& name, const QString& passwd, const int socket)
 {
-    bool ret = (ptr->*func)(name, passwd);
+    bool ret = (ptr->*f)(name, passwd);
 
     if (!ret)
     {
