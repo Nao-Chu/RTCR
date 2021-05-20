@@ -15,6 +15,8 @@ namespace MESSFNC
     int SignInUp(MySql* ptr, bool (MySql::*func)(const QString&, const QString&),
                  const QString& name, const QString& passwd, const int socket);
 
-    int Users(const int socket, QString user);
+    User* AddUser(const int socket, QString user);
+    User* DelUser(const int socket, QString user);
+    int Users(User* (*func) (int, QString), const int socket, QString user);
 }
 #endif // RECVMESSSTATE_H

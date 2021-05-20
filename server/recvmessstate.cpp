@@ -32,11 +32,28 @@ int MESSFNC::SignInUp(MySql* ptr, bool (MySql::*func)(const QString&, const QStr
     return 0;
 }
 
-int MESSFNC::Users(const int socket, QString user)
+User* MESSFNC::AddUser(const int socket, QString user)
 {
-    qDebug("recv user = %s",qPrintable(user));
     User* temp = User::GetSingleton();
+    qDebug("recv user = %s",qPrintable());
+
     temp->AddUserInf(socket, user.toStdString());
+    return temp;
+}
+
+User* MESSFNC::DelUser(const int socket, QString user)
+{
+    User* temp = User::GetSingleton();
+    user = QString::fromStdString(temp->FindName(socket));
+    qDebug("quit user is %s",qPrintable(user));
+
+    temp->DelUserInf(socket);
+    return temp;
+}
+
+int MESSFNC::Users(User* (*func) (int s, QString u),const int socket, QString user)
+{
+    User* temp = (*func)(socket, user);
     std::list<std::string> names = temp->GetName();
 
     std::list<std::string>::const_iterator it = names.begin();

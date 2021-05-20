@@ -69,12 +69,11 @@ void* MessageState(void* s)
     while(true)
     {
         char buff[1024];
-        User* temp = User::GetSingleton();
         int recv_len = recv(socket, buff, 1024, 0);
         if (recv_len <= 0)
         {
             qDebug("recv fail");
-            temp->DelUserInf(socket);
+            ret = MESSFNC::Users(&MESSFNC::DelUser, socket, NULL);
             break;
         }
 
@@ -94,7 +93,7 @@ void* MessageState(void* s)
             ret = MESSFNC::SignInUp(&mysql, &MySql::SignUpOp, list[1], list[2], socket);
 
         } else if (list[0] == MESS::users){
-            ret = MESSFNC::Users(socket, list[1]);
+            ret = MESSFNC::Users(&MESSFNC::AddUser, socket, list[1]);
 
         } else {
             qDebug("server recv error");
