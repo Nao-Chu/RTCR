@@ -7,6 +7,7 @@
 
 MySql::MySql()
 {
+    InitSql();
 }
 
 void MySql::InitSql()
@@ -14,8 +15,8 @@ void MySql::InitSql()
     QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("0.0.0.0");
     db.setUserName("robotmaster");
-    db.setPassword("123");
-    db.setDatabaseName("/var/lib/mysql");
+    db.setPassword("123456");
+    db.setDatabaseName("users");
     if(!db.open())
     {
         qDebug()<<"Database connected failed!";

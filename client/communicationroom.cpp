@@ -70,14 +70,13 @@ void* RecvServerData(void* p)
     Data data;
     while(true)
     {
-        qDebug("test");
         if (data.ClientRecvData(client) == -1)
         {
             qDebug("clientRecvData error");
             break;
         }
-        qDebug("test1");
-        QString data = QString(QLatin1String((char*)client->GetData()) );
+
+        QString data = QString::fromLocal8Bit((char*)client->GetData() );
         qDebug("recv data = %s",qPrintable(data));
         QStringList list = data.split("#");
 

@@ -5,10 +5,9 @@ int SENDMESSFNC::SendDataToServer(const QString& head, const QString& senddata, 
 {
     Client* client = (Client*)c;
     QString send_data = head + "#" + senddata + '\0';
-    QByteArray ba = send_data.toLatin1();
-
-    client->SetData((char*)ba.data());
-    client->SetSendLen(send_data.length());
+    QByteArray ba = send_data.toLocal8Bit();
+    client->SetData(ba.data());
+    client->SetSendLen(ba.length());
     qDebug("SendDataToServer: buff = %s",ba.data());
 
     Data data;

@@ -75,10 +75,10 @@ void* MessageState(void* s)
         {
             qDebug("recv fail");
             temp->DelUserInf(socket);
-            continue;
+            break;
         }
 
-        QString data = QString(QLatin1String(buff));
+        QString data = QString::fromLocal8Bit(buff);
         qDebug("recv data = %s",qPrintable(data));
         QStringList list = data.split("#");
 
