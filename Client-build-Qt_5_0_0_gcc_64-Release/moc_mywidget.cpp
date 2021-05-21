@@ -1,13 +1,13 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mywidget.h'
 **
-** Created: Fri May 21 09:48:59 2021
+** Created: Fri May 21 09:17:12 2021
 **      by: The Qt Meta Object Compiler version 67 (Qt 5.0.0)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
-#include "mywidget.h"
+#include "../client/mywidget.h"
 #include <QtCore/qbytearray.h>
 #include <QtCore/qmetatype.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)

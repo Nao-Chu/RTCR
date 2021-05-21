@@ -1,17 +1,17 @@
 /****************************************************************************
-** Meta object code from reading C++ file 'mywidget.h'
+** Meta object code from reading C++ file 'signup.h'
 **
-** Created: Fri May 21 09:48:59 2021
+** Created: Fri May 21 09:17:13 2021
 **      by: The Qt Meta Object Compiler version 67 (Qt 5.0.0)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
-#include "mywidget.h"
+#include "../client/signup.h"
 #include <QtCore/qbytearray.h>
 #include <QtCore/qmetatype.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)
-#error "The header file 'mywidget.h' doesn't include <QObject>."
+#error "The header file 'signup.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
 #error "This file was generated using the moc from 5.0.0. It"
 #error "cannot be used with the include files from this version of Qt."
@@ -19,28 +19,27 @@
 #endif
 
 QT_BEGIN_MOC_NAMESPACE
-struct qt_meta_stringdata_MyWidget_t {
+struct qt_meta_stringdata_SignUp_t {
     QByteArrayData data[4];
-    char stringdata[59];
+    char stringdata[41];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    offsetof(qt_meta_stringdata_MyWidget_t, stringdata) + ofs \
+    offsetof(qt_meta_stringdata_SignUp_t, stringdata) + ofs \
         - idx * sizeof(QByteArrayData) \
     )
-static const qt_meta_stringdata_MyWidget_t qt_meta_stringdata_MyWidget = {
+static const qt_meta_stringdata_SignUp_t qt_meta_stringdata_SignUp = {
     {
-QT_MOC_LITERAL(0, 0, 8),
-QT_MOC_LITERAL(1, 9, 23),
-QT_MOC_LITERAL(2, 33, 0),
-QT_MOC_LITERAL(3, 34, 23)
+QT_MOC_LITERAL(0, 0, 6),
+QT_MOC_LITERAL(1, 7, 15),
+QT_MOC_LITERAL(2, 23, 0),
+QT_MOC_LITERAL(3, 24, 15)
     },
-    "MyWidget\0on_signUpButton_clicked\0\0"
-    "on_signInButton_clicked\0"
+    "SignUp\0on_quit_clicked\0\0on_sure_clicked\0"
 };
 #undef QT_MOC_LITERAL
 
-static const uint qt_meta_data_MyWidget[] = {
+static const uint qt_meta_data_SignUp[] = {
 
  // content:
        7,       // revision
@@ -64,39 +63,39 @@ static const uint qt_meta_data_MyWidget[] = {
        0        // eod
 };
 
-void MyWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+void SignUp::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
-        MyWidget *_t = static_cast<MyWidget *>(_o);
+        SignUp *_t = static_cast<SignUp *>(_o);
         switch (_id) {
-        case 0: _t->on_signUpButton_clicked(); break;
-        case 1: _t->on_signInButton_clicked(); break;
+        case 0: _t->on_quit_clicked(); break;
+        case 1: _t->on_sure_clicked(); break;
         default: ;
         }
     }
     Q_UNUSED(_a);
 }
 
-const QMetaObject MyWidget::staticMetaObject = {
-    { &QWidget::staticMetaObject, qt_meta_stringdata_MyWidget.data,
-      qt_meta_data_MyWidget,  qt_static_metacall, 0, 0}
+const QMetaObject SignUp::staticMetaObject = {
+    { &QWidget::staticMetaObject, qt_meta_stringdata_SignUp.data,
+      qt_meta_data_SignUp,  qt_static_metacall, 0, 0}
 };
 
 
-const QMetaObject *MyWidget::metaObject() const
+const QMetaObject *SignUp::metaObject() const
 {
     return QObject::d_ptr->metaObject ? QObject::d_ptr->dynamicMetaObject() : &staticMetaObject;
 }
 
-void *MyWidget::qt_metacast(const char *_clname)
+void *SignUp::qt_metacast(const char *_clname)
 {
     if (!_clname) return 0;
-    if (!strcmp(_clname, qt_meta_stringdata_MyWidget.stringdata))
-        return static_cast<void*>(const_cast< MyWidget*>(this));
+    if (!strcmp(_clname, qt_meta_stringdata_SignUp.stringdata))
+        return static_cast<void*>(const_cast< SignUp*>(this));
     return QWidget::qt_metacast(_clname);
 }
 
-int MyWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+int SignUp::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
     _id = QWidget::qt_metacall(_c, _id, _a);
     if (_id < 0)
