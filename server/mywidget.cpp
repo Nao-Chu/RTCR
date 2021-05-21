@@ -95,7 +95,13 @@ void* MessageState(void* s)
         } else if (list[0] == MESS::users){
             ret = MESSFNC::Users(&MESSFNC::AddUser, socket, list[1]);
 
-        } else {
+        } else if (list[0] == MESS::emoji){
+            ret = MESSFNC::Communicate(list[1]);
+
+        } else if (list[0] == MESS::file){
+            ret = MESSFNC::Communicate(list[1]);
+
+        }else {
             qDebug("server recv error");
             break;
         }

@@ -16,16 +16,26 @@ SOURCES += main.cpp\
         mywidget.cpp \
     communicationroom.cpp \
     signup.cpp \
-    sendmessstate.cpp
+    sendmessstate.cpp \
+    emoji.cpp
 
 HEADERS  += mywidget.h \
     communicationroom.h \
     signup.h \
-    sendmessstate.h
+    sendmessstate.h \
+    emoji.h
 
 FORMS    += mywidget.ui \
     signup.ui \
-    communicationroom.ui
+    communicationroom.ui \
+    emoji.ui
 
 LIBS    += -lmysocket -lpthread
+
+RESOURCES += \
+    imagesrc.qrc \
+    image/emoji.qrc
+
+OTHER_FILES += \
+    login.qss
 

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'communicationroom.ui'
 **
-** Created: Fri May 21 10:11:41 2021
+** Created: Fri May 21 17:25:20 2021
 **      by: Qt User Interface Compiler version 5.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -43,8 +43,10 @@ public:
     QVBoxLayout *verticalLayout_left;
     QTextBrowser *recvBrowser;
     QFrame *frame_2;
-    QGridLayout *gridLayout;
-    QPushButton *pushButton;
+    QHBoxLayout *horizontalLayout_2;
+    QPushButton *emojiButton;
+    QPushButton *fileButton;
+    QPushButton *dalayButton_2;
     QSpacerItem *horizontalSpacer_4;
     QTextEdit *sendEdit;
     QFrame *frame;
@@ -103,30 +105,63 @@ public:
         verticalLayout_left->setContentsMargins(0, -1, -1, -1);
         recvBrowser = new QTextBrowser(CommunicationRoom);
         recvBrowser->setObjectName(QStringLiteral("recvBrowser"));
+        recvBrowser->setOpenExternalLinks(true);
 
         verticalLayout_left->addWidget(recvBrowser);
 
         frame_2 = new QFrame(CommunicationRoom);
         frame_2->setObjectName(QStringLiteral("frame_2"));
         frame_2->setFrameShape(QFrame::StyledPanel);
-        gridLayout = new QGridLayout(frame_2);
-        gridLayout->setSpacing(0);
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        gridLayout->setContentsMargins(0, 0, 0, 0);
-        pushButton = new QPushButton(frame_2);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
+        horizontalLayout_2 = new QHBoxLayout(frame_2);
+        horizontalLayout_2->setSpacing(7);
+        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
+        horizontalLayout_2->setContentsMargins(7, 0, 0, 0);
+        emojiButton = new QPushButton(frame_2);
+        emojiButton->setObjectName(QStringLiteral("emojiButton"));
+        emojiButton->setMinimumSize(QSize(0, 22));
+        emojiButton->setMaximumSize(QSize(30, 16777215));
+        emojiButton->setBaseSize(QSize(0, 0));
+        emojiButton->setMouseTracking(false);
+        emojiButton->setStyleSheet(QStringLiteral("border-image: url(:/emoji/emoji.png);"));
+        emojiButton->setIconSize(QSize(16, 16));
+        emojiButton->setAutoRepeatDelay(300);
+        emojiButton->setAutoDefault(false);
 
-        gridLayout->addWidget(pushButton, 0, 0, 1, 1);
+        horizontalLayout_2->addWidget(emojiButton);
+
+        fileButton = new QPushButton(frame_2);
+        fileButton->setObjectName(QStringLiteral("fileButton"));
+        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Fixed);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(fileButton->sizePolicy().hasHeightForWidth());
+        fileButton->setSizePolicy(sizePolicy1);
+        fileButton->setMinimumSize(QSize(0, 22));
+        fileButton->setMaximumSize(QSize(30, 16777215));
+        fileButton->setStyleSheet(QStringLiteral("border-image: url(:/emoji/file.jpeg);"));
+
+        horizontalLayout_2->addWidget(fileButton);
+
+        dalayButton_2 = new QPushButton(frame_2);
+        dalayButton_2->setObjectName(QStringLiteral("dalayButton_2"));
+        dalayButton_2->setMinimumSize(QSize(0, 22));
+        dalayButton_2->setMaximumSize(QSize(30, 16777215));
+        dalayButton_2->setStyleSheet(QStringLiteral("border-image: url(:/emoji/dalay.jpeg);"));
+
+        horizontalLayout_2->addWidget(dalayButton_2);
 
         horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        gridLayout->addItem(horizontalSpacer_4, 0, 1, 1, 1);
+        horizontalLayout_2->addItem(horizontalSpacer_4);
 
 
         verticalLayout_left->addWidget(frame_2);
 
         sendEdit = new QTextEdit(CommunicationRoom);
         sendEdit->setObjectName(QStringLiteral("sendEdit"));
+        sendEdit->setEnabled(true);
+        sendEdit->setTabChangesFocus(false);
+        sendEdit->setUndoRedoEnabled(true);
 
         verticalLayout_left->addWidget(sendEdit);
 
@@ -175,7 +210,9 @@ public:
     {
         CommunicationRoom->setWindowTitle(QApplication::translate("CommunicationRoom", "Form", 0));
         nameLabel->setText(QApplication::translate("CommunicationRoom", "TextLabel", 0));
-        pushButton->setText(QApplication::translate("CommunicationRoom", "PushButton", 0));
+        emojiButton->setText(QString());
+        fileButton->setText(QString());
+        dalayButton_2->setText(QString());
         sendButton->setText(QApplication::translate("CommunicationRoom", "\345\217\221\351\200\201", 0));
     } // retranslateUi
 

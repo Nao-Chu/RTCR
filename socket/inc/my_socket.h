@@ -176,6 +176,8 @@ namespace MESS
 	extern const char* signin;
 	extern const char* signup;
 	extern const char* users;
+	extern const char* emoji;
+	extern const char* file;
 }
 
 #endif

@@ -19,6 +19,7 @@ public:
 private slots:
     void on_sendButton_clicked();
     void on_recvBrowser_textChanged();
+    void on_fileButton_clicked();
 
 private:
     Ui::CommunicationRoom *ui;

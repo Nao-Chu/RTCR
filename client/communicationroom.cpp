@@ -3,11 +3,13 @@
 
 #include "sendmessstate.h"
 
+#include <QFileDialog>
+
 void* RecvServerData(void* p);
 typedef struct PthreadData
 {
     MySocket* c;
-    Ui::CommunicationRoom* u;
+    Ui::CommunicationRoom* u;    
 }PthreadData;
 
 CommunicationRoom::CommunicationRoom(QWidget *parent) :
@@ -33,6 +35,33 @@ void CommunicationRoom::on_sendButton_clicked()
     ui->sendEdit->clear();
 
     SENDMESSFNC::SendDataToServer(head, text_data, client_);
+}
+
+void CommunicationRoom::on_fileButton_clicked()
+{
+    QString filename;
+    filename = QFileDialog::getOpenFileName(this, tr("file"), "", tr("(*.*)"));
+
+    if (!filename.isNull())
+    {
+        QFile* sendfile = new QFile(filename);
+        if (!sendfile->open(QFile::ReadOnly))
+        {
+            delete sendfile;
+            return;
+        }
+
+        QByteArray outBlock;
+        outBlock = sendfile->read(sendfile->size());
+
+        QString head = QString::fromUtf8(MESS::file);
+        QString text_data = GetUserName() + ":\n" + QString(outBlock);
+        SENDMESSFNC::SendDataToServer(head, text_data, client_);
+        outBlock.resize(0);
+        delete sendfile;
+    }
+    qDebug("file = %s",qPrintable(filename));
+
 }
 
 void CommunicationRoom::Communicate()
@@ -89,7 +118,15 @@ void* RecvServerData(void* p)
             pd.u->listWidget->clear();
             pd.u->listWidget->insertItems(0, list);
 
-        } else {
+        } else if (list[0] == MESS::file){
+            qDebug("Getfile = %s", qPrintable(list[1]));
+            pd.u->recvBrowser->append(list[1]);
+            //QFile file(list[1]);
+            //QTextStream in(&file);
+            //pd.u->recvBrowser->setHtml(in.readAll());
+            //pd.u->recvBrowser->setDocument();
+
+        }else {
             qDebug("client recv error");
             break;
         }

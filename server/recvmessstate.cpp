@@ -78,3 +78,19 @@ int MESSFNC::Users(User* (*func) (int s, QString u),const int socket, QString us
     }
     return ret;
 }
+
+int MESSFNC::File(const QString& senddata)
+{
+    QString head = MESS::file;
+    QString send = head + "#" + senddata + '\0';
+    QByteArray ba = send.toLocal8Bit();
+    qDebug("file send data: %s",qPrintable(send));
+
+    Data data;
+    int ret = data.ServerSendData(ba.data(), ba.length());
+    if (ret == -1)
+    {
+        qDebug("ServerSendData error");
+    }
+    return ret;
+}

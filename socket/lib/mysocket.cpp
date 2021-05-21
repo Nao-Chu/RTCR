@@ -325,3 +325,5 @@ const char* MESS::communicate = "communicate";
 const char* MESS::signin = "signin"; 
 const char* MESS::signup = "signup";
 const char* MESS::users  = "users";
+const char* MESS::emoji  = "emoji";
+const char* MESS::file   = "file";
