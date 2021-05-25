@@ -213,15 +213,12 @@ int Data::ClientRecvData(void* p)
 int Data::ClientSendData(void* p)
 {
 	Client* client = (Client*)p;
-	std::cout << "client&= " << (void*)client << std::endl;
 	int socket = client->GetSocket();
 	int send_len = client->GetSendLen();
 	std::string senddata = client->GetData();
-	std::cout << "t data&= " << &senddata << std::endl;
 
-	std::cout << "send len= " << send_len<< std::endl;
 	std::cout << "send data= " << senddata<< std::endl;
-	send_len = send(socket, senddata, send_len, 0);
+	send_len = send(socket, senddata.c_str(), send_len, 0);
 	if (send_len <= 0){
 		std::cout << "send error\n";
 		return -1;

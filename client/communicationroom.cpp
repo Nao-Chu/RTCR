@@ -51,11 +51,12 @@ void CommunicationRoom::on_fileButton_clicked()
             qDebug("open file fail");
             return;
         }
-
+        QFileInfo fileinfo(filename);
         QByteArray outBlock;
         outBlock = sendfile->read(sendfile->size());
         QString outlen = QString::number(outBlock.length()) + "#";
-        QString head_data = QString::fromUtf8(MESS::file) + "#" + GetUserName() + ":\n#" + outlen;
+        QString outname = fileinfo.fileName() + "#";
+        QString head_data = QString::fromUtf8(MESS::file) + "#" + GetUserName() + ":\n#" + outlen + outname;
         SENDMESSFNC::SendDataToServer(head_data, outBlock, client_);
 
         delete sendfile;

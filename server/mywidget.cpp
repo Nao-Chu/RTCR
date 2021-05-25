@@ -4,7 +4,6 @@
 
 #include <pthread.h>
 #include <QDebug>
-#include <stdio.h>
 
 void* MessageState(void *s);
 void* Accept(void* t);

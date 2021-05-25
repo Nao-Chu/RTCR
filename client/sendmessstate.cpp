@@ -2,18 +2,20 @@
 #include <QFile>
 #include <QDebug>
 #include <string>
+#include <QStringList>
 
 MySocket* SENDMESSFNC::temp_client = NULL;
+
 int SENDMESSFNC::SendDataToServer(const QString& headdata, const QByteArray& senddata, const MySocket* c)
 {
     Client* client = (Client*)c;
     QByteArray headba = headdata.toLocal8Bit();
     QByteArray sendba = headba + senddata;
-    client->SetData(sendba.data());
+    std::string setdata(sendba.constData(), sendba.length());
+    client->SetData(setdata);
     qDebug("send = %s",sendba.data());
     client->SetSendLen(sendba.length());
-    qDebug("SendDataToServer: buff = %s, len = %d",sendba.data(), sendba.size());
-    qDebug() << sendba.toHex();
+
     Data data;
     if (data.ClientSendData(client) == -1){
         qDebug("ClientSendData error");
@@ -46,7 +48,7 @@ char SENDMESSFNC::SignInUpRequest(const QString& type, const QString& user, cons
     }
 
     std::string buff = client->GetData();
-    qDebug("recv success, buff = %s", buff);
+    qDebug("recv success, buff = %s", buff.c_str());
 
     if (QString::localeAwareCompare(type,"up") == 0)
         client->CloseSocket();

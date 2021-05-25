@@ -2,6 +2,7 @@
 
 #include <QFile>
 #include <QDebug>
+#include <QDir>
 
 int MESSFNC::Communicate(const QString& senddata)
 {
@@ -87,12 +88,15 @@ int MESSFNC::File(int socket, const QByteArray& senddata)
     QList<QByteArray> list = senddata.split('#');
 
     QString username = QString(list[1]);
-    int len = QString(list[2]).toInt();
 
+    int len = QString(list[2]).toInt();
     qDebug("file len = %d", len);
+    QString dirname  = QString("/home/zipingzou/Downloads/rtcr_file/");
+    QString filename = dirname + QString(list[3]);
+    qDebug("file name = %s",qPrintable(filename));
     QByteArray filedata = senddata;
 
-    int filelen = list[0].length() + list[1].length() + list[2].length() + 3;
+    int filelen = list[0].length() + list[1].length() + list[2].length() + list[3].length() + 4;
     filedata.remove(0, filelen);
     while(true)
     {
@@ -113,7 +117,7 @@ int MESSFNC::File(int socket, const QByteArray& senddata)
         qDebug("filedata len = %d", filedata.length());
     }
 
-    QFile* recvfile = new QFile("./files/6.png");
+    QFile* recvfile = new QFile(filename);
     if (!recvfile->open(QFile::WriteOnly))
     {
         qDebug("write error\n");
@@ -121,7 +125,7 @@ int MESSFNC::File(int socket, const QByteArray& senddata)
     }
     recvfile->write(filedata);
     recvfile->close();
-    qDebug() << filedata.toHex();
+    //qDebug() << filedata.toHex();
 
     /*
     QString head = MESS::file;

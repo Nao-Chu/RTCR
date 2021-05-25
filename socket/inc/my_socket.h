@@ -9,6 +9,7 @@
 #include <list>
 #include <string>
 #include <map>
+#include <iostream>
 
 typedef struct sockaddr_in SAIN;
 typedef struct sockaddr SA;
@@ -22,7 +23,7 @@ public:
 	virtual SAIN GetAddr() const = 0;
 	virtual void SetAddr() = 0;
 	virtual std::string GetData() const = 0;
-	virtual void SetData(char*) = 0;
+	virtual void SetData(std::string) = 0;
 	virtual void CloseSocket() const = 0;
 	virtual int GetSendLen() const = 0;
 	virtual void SetSendLen(const int sendlen) = 0;
@@ -47,7 +48,7 @@ public:
 	{
 		return client_data_;
 	}
-	virtual void SetData(char* data)
+	virtual void SetData(std::string data)
 	{
 		client_data_.clear();
 		client_data_ = data;
@@ -93,10 +94,14 @@ public:
 	{
 		return server_data_;
 	}
-	virtual void SetData(char* data)
+	virtual void SetData(std::string data)
 	{
 		server_data_.clear();
 		server_data_ = data;
+		std::cout << std::hex;
+		std::cout << "se" << server_data_;
+		std::cout << "de" << data;
+
 	}
 
 	virtual void CloseSocket() const
