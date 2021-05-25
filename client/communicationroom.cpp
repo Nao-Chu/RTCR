@@ -4,6 +4,7 @@
 #include "sendmessstate.h"
 
 #include <QFileDialog>
+#include <QDebug>
 
 void* RecvServerData(void* p);
 typedef struct PthreadData
@@ -29,12 +30,11 @@ CommunicationRoom::~CommunicationRoom()
 
 void CommunicationRoom::on_sendButton_clicked()
 {
-    QString head = QString::fromUtf8(MESS::communicate);
-    QString name = GetUserName();
-    QString text_data = name + ":\n" + ui->sendEdit->toPlainText();
+    QString head_data = QString::fromUtf8(MESS::communicate) + "#" + GetUserName() + ":\n";
+    QByteArray send_data = ui->sendEdit->toPlainText().toLocal8Bit() + '\0';
     ui->sendEdit->clear();
 
-    SENDMESSFNC::SendDataToServer(head, text_data, client_);
+    SENDMESSFNC::SendDataToServer(head_data, send_data, client_);
 }
 
 void CommunicationRoom::on_fileButton_clicked()
@@ -48,16 +48,16 @@ void CommunicationRoom::on_fileButton_clicked()
         if (!sendfile->open(QFile::ReadOnly))
         {
             delete sendfile;
+            qDebug("open file fail");
             return;
         }
 
         QByteArray outBlock;
         outBlock = sendfile->read(sendfile->size());
+        QString outlen = QString::number(outBlock.length()) + "#";
+        QString head_data = QString::fromUtf8(MESS::file) + "#" + GetUserName() + ":\n#" + outlen;
+        SENDMESSFNC::SendDataToServer(head_data, outBlock, client_);
 
-        QString head = QString::fromUtf8(MESS::file);
-        QString text_data = GetUserName() + ":\n" + QString(outBlock);
-        SENDMESSFNC::SendDataToServer(head, text_data, client_);
-        outBlock.resize(0);
         delete sendfile;
     }
     qDebug("file = %s",qPrintable(filename));
@@ -79,9 +79,8 @@ void CommunicationRoom::SetClient(MySocket* client)
 {
     client_ = client;
 
-    QString head = QString::fromUtf8(MESS::users);
-    SENDMESSFNC::SendDataToServer(head, m_name_, client_);
-
+    QString head_data = QString::fromUtf8(MESS::users) + "#";
+    SENDMESSFNC::SendDataToServer(head_data, m_name_.toLocal8Bit() + '\0', client_);
     Communicate();
 
 }
@@ -105,7 +104,7 @@ void* RecvServerData(void* p)
             break;
         }
 
-        QString data = QString::fromLocal8Bit((char*)client->GetData() );
+        QString data = QString::fromStdString(client->GetData());
         qDebug("recv data = %s",qPrintable(data));
         QStringList list = data.split("#");
 

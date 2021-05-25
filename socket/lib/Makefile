@@ -1,5 +1,5 @@
 mVer= 1
-sVer= 0.1
+sVer= 0.2
 src = $(shell find . -name "*.cpp")
 inc = $(shell find ../inc -name "*.h")
 obj = $(src:%.cpp=%.o)

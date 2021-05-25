@@ -25,6 +25,7 @@ MySocket::~MySocket()
 
 Client::Client()
 {
+	std::cout << "Clinet: \n";
 	client_socket_ = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (client_socket_ == -1)
 	{
@@ -44,8 +45,6 @@ void Client::SetAddr()
 	client_addr_.sin_port   = htons(port_);
 	client_addr_.sin_addr.s_addr = INADDR_ANY;
 }
-
-
 
 
 
@@ -74,7 +73,6 @@ void Server::SetAddr()
 	server_addr_.sin_port   = htons(port_);
 	server_addr_.sin_addr.s_addr = INADDR_ANY;
 }
-
 
 
 
@@ -214,12 +212,16 @@ int Data::ClientRecvData(void* p)
 
 int Data::ClientSendData(void* p)
 {
-	Client client = *(Client*)p;
-	int socket = client.GetSocket();
-	int send_len = client.GetSendLen();
+	Client* client = (Client*)p;
+	std::cout << "client&= " << (void*)client << std::endl;
+	int socket = client->GetSocket();
+	int send_len = client->GetSendLen();
+	std::string senddata = client->GetData();
+	std::cout << "t data&= " << &senddata << std::endl;
 
-	std::cout << "send data= " << (char*)client.GetData()<< std::endl;
-	send_len = send(socket, client.GetData(), send_len, 0);
+	std::cout << "send len= " << send_len<< std::endl;
+	std::cout << "send data= " << senddata<< std::endl;
+	send_len = send(socket, senddata, send_len, 0);
 	if (send_len <= 0){
 		std::cout << "send error\n";
 		return -1;

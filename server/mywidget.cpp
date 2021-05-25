@@ -4,6 +4,7 @@
 
 #include <pthread.h>
 #include <QDebug>
+#include <stdio.h>
 
 void* MessageState(void *s);
 void* Accept(void* t);
@@ -76,9 +77,11 @@ void* MessageState(void* s)
             ret = MESSFNC::Users(&MESSFNC::DelUser, socket, NULL);
             break;
         }
-
         QString data = QString::fromLocal8Bit(buff);
-        qDebug("recv data = %s",qPrintable(data));
+        qDebug("recv len = %d ; data = %s",recv_len, qPrintable(data));
+        qDebug("QByteArray len = %d ",QByteArray(buff, recv_len).length());
+
+        qDebug() << QByteArray(buff, recv_len).toHex();
         QStringList list = data.split("#");
 
         if (list[0] == MESS::communicate){
@@ -99,7 +102,7 @@ void* MessageState(void* s)
             ret = MESSFNC::Communicate(list[1]);
 
         } else if (list[0] == MESS::file){
-            ret = MESSFNC::Communicate(list[1]);
+            ret = MESSFNC::File(socket, QByteArray(buff, recv_len));
 
         }else {
             qDebug("server recv error");

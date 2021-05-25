@@ -19,6 +19,6 @@ namespace MESSFNC
     User* DelUser(const int socket, QString user);
     int Users(User* (*func) (int, QString), const int socket, QString user);
 
-    int File(const QString& senddata);
+    int File(int socket, const QByteArray& senddata);
 }
 #endif // RECVMESSSTATE_H

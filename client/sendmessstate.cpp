@@ -1,21 +1,24 @@
 #include "sendmessstate.h"
+#include <QFile>
+#include <QDebug>
+#include <string>
 
 MySocket* SENDMESSFNC::temp_client = NULL;
-int SENDMESSFNC::SendDataToServer(const QString& head, const QString& senddata, const MySocket* c)
+int SENDMESSFNC::SendDataToServer(const QString& headdata, const QByteArray& senddata, const MySocket* c)
 {
     Client* client = (Client*)c;
-    QString send_data = head + "#" + senddata + '\0';
-    QByteArray ba = send_data.toLocal8Bit();
-    client->SetData(ba.data());
-    client->SetSendLen(ba.length());
-    qDebug("SendDataToServer: buff = %s",ba.data());
-
+    QByteArray headba = headdata.toLocal8Bit();
+    QByteArray sendba = headba + senddata;
+    client->SetData(sendba.data());
+    qDebug("send = %s",sendba.data());
+    client->SetSendLen(sendba.length());
+    qDebug("SendDataToServer: buff = %s, len = %d",sendba.data(), sendba.size());
+    qDebug() << sendba.toHex();
     Data data;
     if (data.ClientSendData(client) == -1){
         qDebug("ClientSendData error");
         return -1;
     }
-
     return 0;
 }
 
@@ -28,9 +31,9 @@ char SENDMESSFNC::SignInUpRequest(const QString& type, const QString& user, cons
     client_tcp->TcpConnect();
 
     QString head = type == "in" ? QString::fromUtf8(MESS::signin) : QString::fromUtf8(MESS::signup);
+    head += "#";
     QString senddata = user + '#' + passwd + '\0';
-
-    if (SendDataToServer(head, senddata, client) == -1)
+    if (SendDataToServer(head, senddata.toLocal8Bit(), client) == -1)
     {
         return 'e';
     }
@@ -42,7 +45,7 @@ char SENDMESSFNC::SignInUpRequest(const QString& type, const QString& user, cons
         return 'e';
     }
 
-    char* buff = (char*)client->GetData();
+    std::string buff = client->GetData();
     qDebug("recv success, buff = %s", buff);
 
     if (QString::localeAwareCompare(type,"up") == 0)
